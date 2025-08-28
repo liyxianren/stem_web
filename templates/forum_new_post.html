@@ -1,0 +1,976 @@
+{% extends "base.html" %}
+
+{% block title %}Ask New Question - Community Questions{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* New Post Form Styles */
+    .form-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .form-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        outline: none;
+    }
+    
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+    
+    /* Image Upload Styles */
+    .image-upload-container {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .image-upload-container:hover {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .image-upload-container.dragover {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.1);
+        transform: scale(1.02);
+    }
+
+    /* File Upload Styles */
+    .file-upload-container {
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        background: #f8fafc;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .file-upload-container:hover {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .file-upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    /* File Preview Styles */
+    .file-preview {
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        position: relative;
+    }
+    
+    .file-preview .file-icon {
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
+        color: var(--color-primary);
+    }
+    
+    .file-preview .file-info {
+        flex-grow: 1;
+    }
+    
+    .file-preview .file-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .file-preview .file-size {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+    
+    .file-remove {
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    
+    .file-remove:hover {
+        background: #dc2626;
+        transform: scale(1.1);
+    }
+    
+    .image-upload-icon {
+        font-size: 3rem;
+        color: #94a3b8;
+        margin-bottom: 1rem;
+    }
+    
+    .image-upload-text {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .image-upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    /* Image Preview */
+    .image-preview {
+        position: relative;
+        display: inline-block;
+        margin: 0.5rem;
+    }
+    
+    .image-preview img {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        object-fit: cover;
+    }
+    
+    .image-remove {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    
+    .image-remove:hover {
+        background: #dc2626;
+        transform: scale(1.1);
+    }
+    
+    /* Category Selection */
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .category-option {
+        position: relative;
+    }
+    
+    .category-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .category-label {
+        display: block;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .category-label:hover {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .category-option input[type="radio"]:checked + .category-label {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--color-primary-dark);
+    }
+    
+    .category-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+        transform: translateY(-1px);
+        color: white;
+    }
+    
+    /* Character Counter */
+    .character-counter {
+        text-align: right;
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+    }
+    
+    .character-counter.warning {
+        color: #d97706;
+    }
+    
+    .character-counter.error {
+        color: #ef4444;
+    }
+    
+    /* Progress Indicator */
+    .form-progress {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-step {
+        display: flex;
+        align-items: center;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .progress-step.active {
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+    
+    .progress-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        margin: 0 1rem;
+    }
+    
+    .progress-step.active .progress-dot {
+        background: var(--color-primary);
+    }
+    
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+        
+        .category-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        }
+        
+        .image-preview img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Form Header -->
+<div class="form-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold mb-2">Ask New Question</h1>
+                <p class="fs-5 mb-0" style="opacity: 0.9;">
+                    Ask questions, share knowledge, or seek help from the community
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/forum" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Questions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Form -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-container">
+                <!-- Progress Indicator -->
+                <div class="form-progress">
+                    <div class="progress-step active">
+                        <span>Content</span>
+                        <div class="progress-dot"></div>
+                    </div>
+                    <div class="progress-step">
+                        <span>Images</span>
+                        <div class="progress-dot"></div>
+                    </div>
+                    <div class="progress-step">
+                        <span>Category</span>
+                    </div>
+                </div>
+
+                <form id="newPostForm" action="/forum/create-post" method="POST" enctype="multipart/form-data">
+                    <!-- Post Title -->
+                    <div class="form-group">
+                        <label for="title" class="form-label">
+                            <i class="fas fa-heading me-2"></i>
+                            Question Title *
+                        </label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               placeholder="Enter a descriptive title for your question" 
+                               required maxlength="200">
+                        <div class="character-counter" id="titleCounter">0 / 200</div>
+                    </div>
+
+                    <!-- Topic/Tags -->
+                    <div class="form-group">
+                        <label for="topic" class="form-label">
+                            <i class="fas fa-tag me-2"></i>
+                            Topic *
+                            <small class="text-muted">(Tags to help categorize your question)</small>
+                        </label>
+                        <input type="text" id="topic" name="topic" class="form-control" 
+                               placeholder="e.g., Mathematics, Physics, Chemistry (separate multiple topics with commas)" 
+                               required maxlength="100">
+                        <div class="form-text">Use specific topics like "Calculus", "Organic Chemistry", "Quantum Physics" etc.</div>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="form-group">
+                        <label for="content" class="form-label">
+                            <i class="fas fa-edit me-2"></i>
+                            Question Details *
+                        </label>
+                        <textarea id="content" name="content" class="form-control" 
+                                  rows="8" placeholder="Write your post content here..." 
+                                  required maxlength="5000"></textarea>
+                        <div class="character-counter" id="contentCounter">0 / 5000</div>
+                    </div>
+
+                    <!-- Cover Image Upload -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image me-2"></i>
+                            Cover Image (Optional)
+                            <small class="text-muted">(This will be displayed as the main image)</small>
+                        </label>
+                        <div class="image-upload-container" id="coverImageUpload">
+                            <input type="file" name="cover_image" id="coverImageInput" 
+                                   class="image-upload-input" accept="image/*">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt image-upload-icon"></i>
+                                <div class="image-upload-text">
+                                    <strong>Click to upload cover image</strong><br>
+                                    or drag and drop<br>
+                                    <small>PNG, JPG up to 5MB</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="coverImagePreview" class="mt-3"></div>
+                    </div>
+
+                    <!-- File Attachments -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-paperclip me-2"></i>
+                            Attachments
+                            <small class="text-muted">(Optional - files that others can download)</small>
+                            <span id="attachmentCount" class="badge bg-primary ms-2" style="display: none;">0 files</span>
+                        </label>
+                        <div class="file-upload-container" id="attachmentsUpload">
+                            <input type="file" name="attachments" id="attachmentsInput" 
+                                   class="file-upload-input" multiple>
+                            <div class="upload-content">
+                                <i class="fas fa-file-upload image-upload-icon"></i>
+                                <div class="image-upload-text">
+                                    <strong>Click to select files</strong><br>
+                                    or drag and drop<br>
+                                    <small>Select multiple times to add more files (max 10 files, 5MB each)</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 mb-3" id="attachmentControls" style="display: none !important;">
+                            <small class="text-muted">You can select files multiple times to add more attachments</small>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="clearAllAttachments">
+                                <i class="fas fa-trash me-1"></i>Clear All
+                            </button>
+                        </div>
+                        <div id="attachmentsPreview" class="mt-3"></div>
+                    </div>
+
+                    <!-- Category Selection -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tags me-2"></i>
+                            Question Category *
+                        </label>
+                        <div class="category-grid">
+                            <div class="category-option">
+                                <input type="radio" id="books" name="category" value="books" required>
+                                <label for="books" class="category-label">
+                                    <i class="fas fa-book category-icon" style="color: #7c3aed;"></i>
+                                    <strong>Books</strong><br>
+                                    <small>Textbook reviews and recommendations</small>
+                                </label>
+                            </div>
+                            
+                            <div class="category-option">
+                                <input type="radio" id="homework" name="category" value="homework" required>
+                                <label for="homework" class="category-label">
+                                    <i class="fas fa-pencil-alt category-icon" style="color: #2563eb;"></i>
+                                    <strong>Homework</strong><br>
+                                    <small>Homework Paper, Homework help</small>
+                                </label>
+                            </div>
+                            
+                            <div class="category-option">
+                                <input type="radio" id="tests" name="category" value="tests" required>
+                                <label for="tests" class="category-label">
+                                    <i class="fas fa-file-alt category-icon" style="color: #f59e0b;"></i>
+                                    <strong>Tests</strong><br>
+                                    <small>Test paper, Past paper</small>
+                                </label>
+                            </div>
+                            
+                            <div class="category-option">
+                                <input type="radio" id="notes" name="category" value="notes" required>
+                                <label for="notes" class="category-label">
+                                    <i class="fas fa-sticky-note category-icon" style="color: #16a34a;"></i>
+                                    <strong>Notes</strong><br>
+                                    <small>Study Notes, learning experiences</small>
+                                </label>
+                            </div>
+                            
+                            <div class="category-option">
+                                <input type="radio" id="questions" name="category" value="questions" required>
+                                <label for="questions" class="category-label">
+                                    <i class="fas fa-question-circle category-icon" style="color: #dc2626;"></i>
+                                    <strong>Questions</strong><br>
+                                    <small>Ask Questions, Get Answers, Community Help</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between pt-4 mt-4" style="border-top: 1px solid #e2e8f0;">
+                        <a href="/forum" class="btn-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Cancel
+                        </a>
+                        
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn-primary" id="publishBtn">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Ask Question
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const titleCounter = document.getElementById('titleCounter');
+    const contentCounter = document.getElementById('contentCounter');
+    const coverImageInput = document.getElementById('coverImageInput');
+    const attachmentsInput = document.getElementById('attachmentsInput');
+    const coverImagePreview = document.getElementById('coverImagePreview');
+    const attachmentsPreview = document.getElementById('attachmentsPreview');
+    const form = document.getElementById('newPostForm');
+    
+    let selectedAttachments = []; // Track valid attachment files
+    const maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+    
+    // Character counters
+    function updateCounter(input, counter, max) {
+        const count = input.value.length;
+        counter.textContent = `${count} / ${max}`;
+        
+        counter.classList.remove('warning', 'error');
+        if (count > max * 0.9) {
+            counter.classList.add('warning');
+        }
+        if (count >= max) {
+            counter.classList.add('error');
+        }
+    }
+    
+    titleInput.addEventListener('input', function() {
+        updateCounter(this, titleCounter, 200);
+    });
+    
+    contentInput.addEventListener('input', function() {
+        updateCounter(this, contentCounter, 5000);
+    });
+
+    // File attachment handling - CUMULATIVE MODE
+    function handleAttachmentUpload(files) {
+        // Process new files and ADD to existing attachments (do NOT clear existing)
+        Array.from(files).forEach(file => {
+            // Check file size
+            if (file.size > maxFileSize) {
+                alert(`File "${file.name}" is too large. Maximum file size is 5MB.`);
+                return;
+            }
+            
+            // Check for duplicate files (by name and size)
+            const isDuplicate = selectedAttachments.some(existingFile => 
+                existingFile.name === file.name && existingFile.size === file.size
+            );
+            
+            if (isDuplicate) {
+                alert(`File "${file.name}" is already selected. Skipping duplicate.`);
+                return;
+            }
+            
+            // Check file count limit (max 10 files)
+            if (selectedAttachments.length >= 10) {
+                alert(`Maximum 10 files allowed. Cannot add "${file.name}".`);
+                return;
+            }
+            
+            // Add to selected attachments (CUMULATIVE)
+            selectedAttachments.push(file);
+            
+            // Create preview
+            createAttachmentPreview(file);
+        });
+        
+        // Update file count display
+        updateAttachmentCount();
+        console.log(`Selected ${selectedAttachments.length} attachments:`, selectedAttachments.map(f => f.name));
+    }
+    
+    function updateAttachmentCount() {
+        const countElement = document.getElementById('attachmentCount');
+        const controlsElement = document.getElementById('attachmentControls');
+        
+        if (selectedAttachments.length > 0) {
+            countElement.textContent = `${selectedAttachments.length} file${selectedAttachments.length > 1 ? 's' : ''}`;
+            countElement.style.display = 'inline';
+            controlsElement.style.display = 'flex';
+        } else {
+            countElement.style.display = 'none';
+            controlsElement.style.display = 'none';
+        }
+    }
+    
+    function clearAllAttachments() {
+        if (selectedAttachments.length === 0) return;
+        
+        if (confirm(`Are you sure you want to remove all ${selectedAttachments.length} selected files?`)) {
+            selectedAttachments = [];
+            attachmentsPreview.innerHTML = '';
+            updateAttachmentCount();
+            
+            // Clear the file input
+            attachmentsInput.value = '';
+            
+            console.log('All attachments cleared');
+        }
+    }
+    
+    function createAttachmentPreview(file) {
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'file-preview';
+        
+        // Get file icon based on type
+        const fileIcon = getFileIcon(file.type);
+        
+        previewDiv.innerHTML = `
+            <i class="fas fa-${fileIcon} file-icon"></i>
+            <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-size">${formatFileSize(file.size)}</div>
+            </div>
+            <button type="button" class="file-remove" title="Remove file">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        // Add remove functionality
+        previewDiv.querySelector('.file-remove').addEventListener('click', function() {
+            const index = selectedAttachments.indexOf(file);
+            if (index > -1) {
+                selectedAttachments.splice(index, 1);
+            }
+            previewDiv.remove();
+            updateAttachmentCount();
+            console.log(`Removed file: ${file.name}. Remaining: ${selectedAttachments.length}`);
+        });
+        
+        attachmentsPreview.appendChild(previewDiv);
+    }
+    
+    function getFileIcon(mimeType) {
+        if (mimeType.startsWith('image/')) return 'image';
+        if (mimeType.startsWith('video/')) return 'video';
+        if (mimeType.startsWith('audio/')) return 'music';
+        if (mimeType.includes('pdf')) return 'file-pdf';
+        if (mimeType.includes('word')) return 'file-word';
+        if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return 'file-excel';
+        if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return 'file-powerpoint';
+        if (mimeType.includes('zip') || mimeType.includes('rar')) return 'file-archive';
+        return 'file';
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Cover image upload handling
+    function handleImageUpload(input, preview, isCover = true, maxCount = 1) {
+        const files = Array.from(input.files);
+        
+        files.forEach((file, index) => {
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('File size must be less than 5MB');
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                alert('Please select only image files');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'image-preview';
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'Preview';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'image-remove';
+                removeBtn.innerHTML = '×';
+                removeBtn.type = 'button';
+                
+                // Cover image handling only
+                previewDiv.dataset.fileIndex = 0;
+                removeBtn.addEventListener('click', function() {
+                    previewDiv.remove();
+                    input.value = '';
+                });
+                
+                preview.innerHTML = ''; // Only one cover image
+                previewDiv.appendChild(img);
+                previewDiv.appendChild(removeBtn);
+                preview.appendChild(previewDiv);
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+    
+    coverImageInput.addEventListener('change', function() {
+        handleImageUpload(this, coverImagePreview, true);
+    });
+    
+    attachmentsInput.addEventListener('change', function() {
+        handleAttachmentUpload(this.files);
+        // Clear input to allow selecting the same files again for cumulative upload
+        this.value = '';
+    });
+    
+    // Clear all attachments button event listener
+    document.getElementById('clearAllAttachments').addEventListener('click', clearAllAttachments);
+    
+    // Drag and drop functionality
+    function setupDragDrop(container, input) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            container.addEventListener(eventName, () => container.classList.add('dragover'), false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, () => container.classList.remove('dragover'), false);
+        });
+        
+        container.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            input.files = files;
+            input.dispatchEvent(new Event('change'));
+        });
+    }
+    
+    // Attachment drag and drop functionality
+    function setupAttachmentDragDrop(container, input) {
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            container.addEventListener(eventName, () => container.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, () => container.classList.remove('dragover'), false);
+        });
+
+        container.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            handleAttachmentUpload(files);
+        });
+        
+        // Click to upload - avoid double triggering
+        container.addEventListener('click', (e) => {
+            // Only trigger if clicking on the container itself, not the hidden input
+            if (e.target === container || e.target.closest('.upload-content')) {
+                input.click();
+            }
+        });
+    }
+    
+    setupDragDrop(document.getElementById('coverImageUpload'), coverImageInput);
+    setupAttachmentDragDrop(document.getElementById('attachmentsUpload'), attachmentsInput);
+    
+    // Form validation and submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Prepare form data for submission
+        
+        // Create custom FormData with our selected files
+        const formData = new FormData();
+        
+        // Add form fields
+        formData.append('title', titleInput.value);
+        formData.append('topic', document.getElementById('topic').value);
+        formData.append('content', contentInput.value);
+        formData.append('category', document.querySelector('input[name="category"]:checked')?.value || '');
+        
+        // Add cover image (optional)
+        if (coverImageInput.files.length > 0) {
+            formData.append('cover_image', coverImageInput.files[0]);
+        }
+        
+        // Add attachments from selectedAttachments array (CUMULATIVE FILES)
+        selectedAttachments.forEach((file) => {
+            formData.append('attachments', file);
+        });
+        
+        // Basic validation
+        if (!titleInput.value.trim()) {
+            alert('Please enter a post title.');
+            titleInput.focus();
+            return;
+        }
+        
+        if (!contentInput.value.trim()) {
+            alert('Please enter post content.');
+            contentInput.focus();
+            return;
+        }
+        
+        // Cover image is optional, no validation needed
+        
+        const selectedCategory = document.querySelector('input[name="category"]:checked');
+        if (!selectedCategory) {
+            alert('Please select a category.');
+            return;
+        }
+        
+        // Show loading state
+        const publishBtn = document.getElementById('publishBtn');
+        publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Publishing...';
+        publishBtn.disabled = true;
+        
+        // Submit form using fetch with our custom FormData
+        fetch('/forum/create-post', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                // Follow redirect
+                window.location.href = response.url;
+            } else {
+                return response.text().then(text => {
+                    // Parse HTML to find flash messages or errors
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const alerts = doc.querySelectorAll('.alert');
+                    if (alerts.length > 0) {
+                        alert(alerts[0].textContent.trim());
+                    }
+                    publishBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Ask Question';
+                    publishBtn.disabled = false;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error creating post. Please try again.');
+            publishBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Ask Question';
+            publishBtn.disabled = false;
+        });
+    });
+    
+    // Save draft functionality - REMOVED because saveDraftBtn element doesn't exist
+    // If you want to add a save draft button, add it to the HTML first
+    
+    // Load draft on page load
+    const savedDraft = localStorage.getItem('forumPostDraft');
+    if (savedDraft) {
+        try {
+            const draftData = JSON.parse(savedDraft);
+            
+            if (confirm('Would you like to restore your saved draft?')) {
+                titleInput.value = draftData.title || '';
+                contentInput.value = draftData.content || '';
+                
+                if (draftData.category) {
+                    const categoryRadio = document.querySelector(`input[name="category"][value="${draftData.category}"]`);
+                    if (categoryRadio) {
+                        categoryRadio.checked = true;
+                    }
+                }
+                
+                // Update counters
+                updateCounter(titleInput, titleCounter, 200);
+                updateCounter(contentInput, contentCounter, 5000);
+            }
+        } catch (e) {
+            console.error('Error loading draft:', e);
+        }
+    }
+});
+</script>
+{% endblock %}

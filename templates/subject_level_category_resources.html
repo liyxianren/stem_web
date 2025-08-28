@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} Resources - STEM Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Category-specific header backgrounds */
+    .category-header.category-books {
+        background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+        box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+    }
+    
+    .category-header.category-homework {
+        background: linear-gradient(135deg, #ef4444 0%, #f87171 50%, #fca5a5 100%);
+        box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+    }
+    
+    .category-header.category-tests {
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fde047 100%);
+        box-shadow: 0 8px 32px rgba(245, 158, 11, 0.3);
+    }
+    
+    .category-header.category-notes {
+        background: linear-gradient(135deg, #22c55e 0%, #4ade80 50%, #86efac 100%);
+        box-shadow: 0 8px 32px rgba(34, 197, 94, 0.3);
+    }
+    
+    .category-header.category-questions {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #67e8f9 100%);
+        box-shadow: 0 8px 32px rgba(6, 182, 212, 0.3);
+    }
+    
+    /* Add subtle pattern overlay */
+    .category-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    .breadcrumb-nav {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .breadcrumb-nav a {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-nav a:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .breadcrumb-nav .breadcrumb-divider {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0.75rem;
+        font-weight: 600;
+    }
+    
+    .breadcrumb-nav strong {
+        color: white;
+        font-weight: 700;
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+    }
+    
+    /* Header content styles */
+    .category-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+        line-height: 1.2;
+    }
+    
+    .category-header p {
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+        opacity: 0.95 !important;
+        line-height: 1.4;
+    }
+    
+    .filter-summary {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .filter-summary h4 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resource-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .resource-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .resource-card a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-card a:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-image-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-neutral);
+    }
+
+    /* Post Card Styles - imported from forum */
+    .post-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    
+    .post-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+    
+    .post-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .post-card:hover .post-image {
+        transform: scale(1.05);
+    }
+    
+    .post-content {
+        padding: 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .post-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .category-books { background: #ede9fe; color: #7c3aed; }
+    .category-homework { background: #fee2e2; color: #dc2626; }
+    .category-tests { background: #fef3c7; color: #d97706; }
+    .category-notes { background: #dcfce7; color: #16a34a; }
+    .category-questions { background: #dbeafe; color: #2563eb; }
+    
+    .post-title {
+        color: var(--color-neutral-dark);
+        line-height: 1.3;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .post-preview {
+        line-height: 1.5;
+        flex-grow: 1;
+        margin-bottom: 1rem !important;
+    }
+    
+    .post-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+        font-size: 0.875rem;
+    }
+    
+    .post-meta-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .post-author {
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+    }
+    
+    .post-date {
+        font-size: 0.8rem;
+    }
+    
+    .post-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .post-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: var(--color-neutral);
+        font-size: 0.875rem;
+    }
+    
+    .post-stat i {
+        font-size: 0.8rem;
+    }
+    
+    .resource-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .resource-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .resource-type-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+    
+    .badge-books { background: #ede9fe; color: #7c3aed; }
+    .badge-homework { background: #fee2e2; color: #dc2626; }
+    .badge-tests { background: #fef3c7; color: #d97706; }
+    .badge-notes { background: #dcfce7; color: #16a34a; }
+    .badge-questions { background: #dbeafe; color: #2563eb; }
+    .badge-reference { background: #ede9fe; color: #7c3aed; }
+    .badge-past_paper { background: #fef3c7; color: #d97706; }
+    .badge-question { background: #dbeafe; color: #2563eb; }
+    
+    .resource-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+        font-size: 0.875rem;
+        color: var(--color-neutral);
+    }
+    
+    .resource-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .difficulty-badge {
+        padding: 0.125rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .difficulty-beginner { background: #dcfce7; color: #16a34a; }
+    .difficulty-intermediate { background: #fef3c7; color: #d97706; }
+    .difficulty-advanced { background: #fee2e2; color: #dc2626; }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--color-neutral);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-summary {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-summary h4 {
+        margin: 0;
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    /* Category specific icons and colors */
+    .category-books { 
+        background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    }
+    .category-homework { 
+        background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    }
+    .category-tests { 
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    }
+    .category-notes { 
+        background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+    }
+    .category-questions { 
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Category Header -->
+<div class="category-header category-{{ category }}">
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb-nav">
+            <a href="{{ url_for('subjects_overview') }}">All Subjects</a>
+            <span class="breadcrumb-divider">></span>
+            <span style="color: rgba(255, 255, 255, 0.7);">{{ subject_title }}</span>
+            <span class="breadcrumb-divider">></span>
+            <a href="{{ url_for('subject_level_resources', subject=subject, education_level=education_level) }}">{{ level_title }}</a>
+            <span class="breadcrumb-divider">></span>
+            <strong>{{ category_title }}</strong>
+        </nav>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-2">{{ page_title }}</h1>
+                <p class="fs-5 mb-0" style="opacity: 0.9;">
+                    {{ category_title }} resources for {{ subject_title }} at {{ level_title }} level
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="filter-summary">
+                    <h4>{{ resources|length }} resource{% if resources|length != 1 %}s{% endif %} found</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resources Content -->
+<div class="container">
+    {% if resources %}
+        <div class="row">
+            {% for resource in resources %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="post-card resource-card">
+                    {% if category == 'questions' %}
+                        <a href="{{ url_for('forum_post_detail', post_id=resource.id) }}" class="resource-link">
+                    {% else %}
+                        <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="resource-link">
+                    {% endif %}
+                        <!-- Resource Image -->
+                        <div class="resource-image-container">
+                            {% if resource.cover_image %}
+                                {% if resource.cover_image.startswith('http') %}
+                                    <img src="{{ resource.cover_image }}" alt="{{ resource.title }}" class="post-image resource-image">
+                                {% else %}
+                                    <img src="{{ resource.cover_image | image_url }}" alt="{{ resource.title }}" class="post-image resource-image">
+                                {% endif %}
+                            {% else %}
+                                <div class="post-image resource-image-placeholder">
+                                    {% if category == 'books' %}
+                                        <i class="fas fa-book fa-3x text-primary"></i>
+                                    {% elif category == 'homework' %}
+                                        <i class="fas fa-pencil-alt fa-3x text-danger"></i>
+                                    {% elif category == 'tests' %}
+                                        <i class="fas fa-file-alt fa-3x text-warning"></i>
+                                    {% elif category == 'notes' %}
+                                        <i class="fas fa-sticky-note fa-3x text-success"></i>
+                                    {% elif category == 'questions' %}
+                                        <i class="fas fa-question-circle fa-3x text-info"></i>
+                                    {% else %}
+                                        <i class="fas fa-file fa-3x text-secondary"></i>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Resource Content -->
+                        <div class="post-content">
+                            <!-- Resource Category Badge -->
+                            <div class="resource-category-container mb-3">
+                                <span class="post-category category-{{ category }}">
+                                    {% if category == 'books' %}
+                                        <i class="fas fa-book me-1"></i>Books
+                                    {% elif category == 'homework' %}
+                                        <i class="fas fa-pencil-alt me-1"></i>Homework
+                                    {% elif category == 'tests' %}
+                                        <i class="fas fa-file-alt me-1"></i>Tests
+                                    {% elif category == 'notes' %}
+                                        <i class="fas fa-sticky-note me-1"></i>Notes
+                                    {% elif category == 'questions' %}
+                                        <i class="fas fa-question-circle me-1"></i>Questions
+                                    {% endif %}
+                                </span>
+                                {% if resource.difficulty_level %}
+                                <span class="difficulty-badge difficulty-{{ resource.difficulty_level }} ms-2">
+                                    {{ resource.difficulty_level|title }}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Resource Title -->
+                            <h5 class="post-title fw-bold mb-2">{{ resource.title }}</h5>
+
+                            <!-- Resource Description -->
+                            <p class="post-preview text-muted mb-3">
+                                {{ resource.description[:120] }}{% if resource.description and resource.description|length > 120 %}...{% endif %}
+                            </p>
+
+                            <!-- Resource Meta Info -->
+                            <div class="post-meta">
+                                <div class="post-meta-left">
+                                    <span class="post-author">
+                                        <i class="fas fa-user me-1"></i>
+                                        {{ resource.author_name }}
+                                    </span>
+                                    <span class="post-date text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        {{ resource.created_at.strftime('%Y-%m-%d') if resource.created_at else 'Unknown' }}
+                                    </span>
+                                </div>
+                                <div class="post-stats">
+                                    <span class="post-stat">
+                                        <i class="fas fa-eye"></i>
+                                        <span>{{ resource.view_count or 0 }}</span>
+                                    </span>
+                                    {% if category == 'questions' %}
+                                        <span class="post-stat">
+                                            <i class="fas fa-comments"></i>
+                                            <span>{{ resource.reply_count or 0 }}</span>
+                                        </span>
+                                    {% else %}
+                                        {% if resource.like_count %}
+                                        <span class="post-stat">
+                                            <i class="fas fa-heart text-danger"></i>
+                                            <span>{{ resource.like_count }}</span>
+                                        </span>
+                                        {% endif %}
+                                        {% if resource.download_count %}
+                                        <span class="post-stat">
+                                            <i class="fas fa-download text-success"></i>
+                                            <span>{{ resource.download_count }}</span>
+                                        </span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3 class="h4 mb-3">No {{ category_title }} Found</h3>
+            <p class="mb-4">
+                No {{ category_title.lower() }} resources available yet for {{ subject_title }} at {{ level_title }} level.
+            </p>
+            {% if current_user.is_authenticated %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('submit_resource_page') }}" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>
+                        Submit Resource
+                    </a>
+                    {% if category == 'questions' %}
+                        <a href="{{ url_for('forum_new_post') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Ask Question
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Back Navigation -->
+<div class="container mt-4 mb-5">
+    <div class="text-center">
+        <a href="{{ url_for('subject_level_resources', subject=subject, education_level=education_level) }}" class="btn btn-outline-primary me-3">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to {{ level_title }}
+        </a>
+        <a href="{{ url_for('subjects_category', subject=subject) }}" class="btn btn-outline-secondary me-3">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to {{ subject_title }}
+        </a>
+        <a href="{{ url_for('subjects_overview') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-home me-2"></i>
+            All Subjects
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add hover effects to resource cards
+    document.querySelectorAll('.resource-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

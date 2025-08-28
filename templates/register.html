@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}Register - STEM Academic Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-section {
+        background: linear-gradient(135deg, var(--color-neutral-light) 0%, #fff 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+    
+    /* 背景装饰球体 */
+    .register-section .blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        filter: blur(3rem);
+        opacity: 0.15;
+        pointer-events: none;
+    }
+    
+    .register-section .blob-1 {
+        top: 5%;
+        right: 15%;
+        width: 18rem;
+        height: 18rem;
+        background-color: #3B82F6;
+        animation: blob 10s infinite;
+    }
+    
+    .register-section .blob-2 {
+        bottom: 10%;
+        left: 5%;
+        width: 15rem;
+        height: 15rem;
+        background-color: #10B981;
+        animation: blob 10s infinite 3s;
+    }
+    
+    .register-section .blob-3 {
+        top: 60%;
+        right: 5%;
+        width: 12rem;
+        height: 12rem;
+        background-color: #8B5CF6;
+        animation: blob 10s infinite 5s;
+    }
+    
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(25px, -40px) scale(1.15); }
+        66% { transform: translate(-20px, 20px) scale(0.85); }
+    }
+    
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        border-radius: 2rem;
+        box-shadow: 0 25px 70px rgba(59, 130, 246, 0.1);
+        overflow: hidden;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .register-header {
+        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .register-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+    }
+    
+    .form-floating {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid rgba(59, 130, 246, 0.1);
+        border-radius: 1rem;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .form-floating label {
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+    }
+    
+    .brand-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+    
+    .welcome-text {
+        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+        font-size: 1.75rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-subtitle {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+        border: none;
+        border-radius: 1rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="register-section d-flex align-items-center">
+    <!-- 背景装饰球体 -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="register-card">
+                    <div class="register-header">
+                        <i class="fa-solid fa-flask brand-icon"></i>
+                        <h1 class="welcome-text">Join STEM Platform</h1>
+                        <p class="welcome-subtitle mb-0">Create your account to access academic resources</p>
+                    </div>
+                    
+                    <div class="p-4 p-md-5">
+                        <form method="POST" action="{{ url_for('register') }}">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       required placeholder="Full Name" pattern="[A-Za-z\s\-]+">
+                                <label for="username">
+                                    <i class="fa-solid fa-user me-2"></i>Full Name (English only)
+                                </label>
+                                <div class="form-text">Use letters, spaces, and hyphens only</div>
+                            </div>
+                            
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       required placeholder="Email Address">
+                                <label for="email">
+                                    <i class="fa-solid fa-envelope me-2"></i>Email Address
+                                </label>
+                            </div>
+                            
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       required placeholder="Password" minlength="6">
+                                <label for="password">
+                                    <i class="fa-solid fa-lock me-2"></i>Password
+                                </label>
+                                <div class="form-text">At least 6 characters</div>
+                            </div>
+                            
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                       required placeholder="Confirm Password">
+                                <label for="confirm_password">
+                                    <i class="fa-solid fa-lock me-2"></i>Confirm Password
+                                </label>
+                            </div>
+                            
+                            
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="agree_terms" required>
+                                <label class="form-check-label text-muted" for="agree_terms">
+                                    I agree to the <a href="#" style="color: #3B82F6;">Terms of Service</a> and <a href="#" style="color: #3B82F6;">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-user-plus me-2"></i>Create Account
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center pt-3" style="border-top: 1px solid rgba(59, 130, 246, 0.1);">
+                            <p class="text-muted mb-0">
+                                Already have an account?
+                                <a href="{{ url_for('login') }}" class="fw-bold text-decoration-none" style="color: #3B82F6;">
+                                    <i class="fa-solid fa-sign-in-alt me-1"></i>Sign In
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 提示信息 -->
+                <div class="text-center mt-4">
+                    <div class="bg-white rounded-3 p-3 shadow-sm" style="border: 1px solid rgba(59, 130, 246, 0.1);">
+                        <p class="text-muted small mb-0">
+                            <i class="fa-solid fa-info-circle me-2" style="color: #3B82F6;"></i>
+                            After registration, you can immediately access the platform
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        
+        // Auto-focus first input
+        setTimeout(() => {
+            usernameInput.focus();
+        }, 500);
+        
+        // Real-time validation
+        usernameInput.addEventListener('input', function() {
+            const value = this.value;
+            const isValid = /^[A-Za-z\s\-]+$/.test(value);
+            
+            if (value && !isValid) {
+                this.classList.add('is-invalid');
+                this.setCustomValidity('Only English letters, spaces, and hyphens are allowed');
+            } else {
+                this.classList.remove('is-invalid');
+                this.setCustomValidity('');
+            }
+        });
+        
+        // Password confirmation validation
+        confirmPasswordInput.addEventListener('input', function() {
+            if (this.value && this.value !== passwordInput.value) {
+                this.classList.add('is-invalid');
+                this.setCustomValidity('Passwords do not match');
+            } else {
+                this.classList.remove('is-invalid');
+                this.setCustomValidity('');
+            }
+        });
+        
+        passwordInput.addEventListener('input', function() {
+            if (confirmPasswordInput.value) {
+                confirmPasswordInput.dispatchEvent(new Event('input'));
+            }
+        });
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Creating Account...';
+            submitBtn.disabled = true;
+            
+            // Restore button if there's an error
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 5000);
+        });
+    });
+</script>
+{% endblock %}

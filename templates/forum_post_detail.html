@@ -1,0 +1,1264 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title if post else 'Question Details' }} - Science Academic Club{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* STEM Forum Post Detail Styles */
+    .forum-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 1.5rem 0;
+        margin-bottom: 0;
+    }
+    
+    .breadcrumb-nav {
+        background: rgba(248, 250, 252, 0.95);
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "→";
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--color-neutral);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--color-primary);
+    }
+    
+    .breadcrumb-item.active {
+        color: var(--color-neutral-dark);
+    }
+    
+    /* Post Container */
+    .post-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        margin-top: 1.5rem;
+    }
+    
+    .post-header {
+        padding: 2rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .post-meta-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .post-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .category-books { background: #ede9fe; color: #7c3aed; }
+    .category-homework { background: #dbeafe; color: #2563eb; }
+    .category-experience { background: #dcfce7; color: #16a34a; }
+    .category-activities { background: #fef3c7; color: #d97706; }
+    .category-questions { background: #fee2e2; color: #dc2626; }
+    
+    .post-stats {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--color-neutral);
+    }
+    
+    .post-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .post-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-neutral-dark);
+        margin: 0;
+        line-height: 1.3;
+    }
+    
+    /* Author Info */
+    .author-info {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .author-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-right: 1rem;
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+    }
+    
+    .author-details h6 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        font-size: 1.1rem;
+    }
+    
+    .author-details .author-meta {
+        color: var(--color-neutral);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+    
+    .author-role {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    .role-admin { background: #fef3c7; color: #d97706; }
+    .role-moderator { background: #dcfce7; color: #16a34a; }
+    .role-student { background: #dbeafe; color: #2563eb; }
+    
+    /* Post Content */
+    .post-content {
+        padding: 2rem;
+    }
+    
+    .post-images {
+        margin-bottom: 2rem;
+    }
+    
+    .post-topic {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .topic-label {
+        color: var(--color-primary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+    
+    .topic-value {
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+        background: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .post-attachments {
+        background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%);
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .attachments-header {
+        color: var(--color-primary);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+    }
+    
+    .attachments-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .attachment-item {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        gap: 1rem;
+    }
+    
+    .attachment-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--color-primary);
+    }
+    
+    .attachment-icon {
+        font-size: 1.5rem;
+        min-width: 2rem;
+        text-align: center;
+    }
+    
+    .attachment-info {
+        flex: 1;
+    }
+    
+    .attachment-name {
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: 0.25rem;
+        word-break: break-all;
+    }
+    
+    .attachment-size {
+        font-size: 0.85rem;
+        color: var(--color-neutral);
+    }
+    
+    .attachment-download-btn {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .attachment-download-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* 单张图片特殊布局 - 简单显示 */
+    .single-image-container {
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background: white;
+    }
+    
+    .single-image {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: cover;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    
+    .single-image:hover {
+        transform: scale(1.02);
+    }
+    
+    /* 备用布局：只有additional images时 */
+    .additional-images {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .additional-images .additional-image {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    
+    .additional-images .additional-image img {
+        min-height: 200px;
+        max-height: 300px;
+    }
+    
+    
+    .post-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--color-neutral-dark);
+        margin-top: 1.5rem;
+        max-width: 1200px;
+    }
+    
+    .post-text p {
+        margin-bottom: 1.2rem;
+        text-align: justify;
+        word-wrap: break-word;
+    }
+    
+    .post-text ul, .post-text ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+    
+    .post-text li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+    
+    .post-text blockquote {
+        border-left: 4px solid var(--color-primary);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        font-style: italic;
+        background: rgba(59, 130, 246, 0.05);
+        padding: 1rem;
+        border-radius: 4px;
+    }
+    
+    .post-text code {
+        background: #f1f5f9;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+    
+    .post-text pre {
+        background: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        border: 1px solid #e2e8f0;
+        margin: 1rem 0;
+    }
+    
+    /* Post Actions */
+    .post-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        background: white;
+        border-radius: 6px;
+        color: var(--color-neutral);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .action-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .action-btn.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+    }
+    
+    .action-btn i {
+        margin-right: 0.5rem;
+    }
+    
+    /* Comments Section */
+    .comments-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        margin-top: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .comments-header {
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .comments-header h4 {
+        margin: 0;
+        color: var(--color-neutral-dark);
+        font-weight: 700;
+    }
+    
+    .comments-count {
+        color: var(--color-neutral);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+    
+    .comments-list {
+        padding: 0;
+    }
+    
+    .comment-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background-color 0.2s ease;
+    }
+    
+    .comment-item:last-child {
+        border-bottom: none;
+    }
+    
+    .comment-item:hover {
+        background: rgba(59, 130, 246, 0.02);
+    }
+    
+    .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-right: 0.75rem;
+    }
+    
+    .comment-author {
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+    }
+    
+    .comment-meta {
+        color: var(--color-neutral);
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+    }
+    
+    .comment-content {
+        color: var(--color-neutral-dark);
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+        white-space: pre-wrap;
+    }
+    
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--color-neutral);
+    }
+    
+    .comment-action {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    
+    .comment-action:hover {
+        color: var(--color-primary);
+    }
+    
+    .comment-like-btn {
+        font-weight: 600;
+    }
+    
+    .comment-like-btn.liked {
+        color: var(--color-primary);
+    }
+    
+    .comment-like-btn.liked i {
+        color: var(--color-primary);
+    }
+    
+    .comment-like-btn:hover {
+        color: var(--color-primary);
+        transform: scale(1.1);
+    }
+    
+    /* Comment Form */
+    .comment-form {
+        padding: 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .comment-form textarea {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        resize: vertical;
+        min-height: 100px;
+        width: 100%;
+    }
+    
+    .comment-form textarea:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        outline: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+    
+    /* Empty State */
+    .empty-comments {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--color-neutral);
+    }
+    
+    .empty-comments i {
+        font-size: 3rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+    
+    /* Image Modal */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        cursor: pointer;
+    }
+    
+    .modal-image {
+        display: block;
+        margin: auto;
+        max-width: 90%;
+        max-height: 90%;
+        margin-top: 5%;
+        border-radius: 8px;
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+    
+    /* 大屏幕优化 */
+    @media (min-width: 1400px) {
+        .images-grid {
+            max-width: 1400px;
+            height: 450px;
+            gap: 10px;
+        }
+        
+        .post-text {
+            max-width: 1400px;
+        }
+        
+        .additional-images {
+            max-width: 1400px;
+        }
+    }
+    
+    @media (min-width: 1600px) {
+        .images-grid {
+            max-width: 1600px;
+            height: 500px;
+            gap: 12px;
+        }
+        
+        .post-text {
+            max-width: 1600px;
+        }
+        
+        .additional-images {
+            max-width: 1600px;
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .post-header {
+            padding: 1.5rem;
+        }
+        
+        .post-content {
+            padding: 1.5rem;
+        }
+        
+        .post-meta-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .post-title {
+            font-size: 1.5rem;
+        }
+        
+        .author-info {
+            padding: 1rem 1.5rem;
+        }
+        
+        .post-actions {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+        
+        .comment-item {
+            padding: 1rem 1.5rem;
+        }
+        
+        .comment-form {
+            padding: 1.5rem;
+        }
+        
+        /* 移动端附件和主题优化 */
+        .post-topic {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .topic-value {
+            align-self: stretch;
+            text-align: center;
+        }
+        
+        .post-attachments {
+            padding: 1rem;
+        }
+        
+        .attachment-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .attachment-info {
+            width: 100%;
+        }
+        
+        .attachment-download-btn {
+            align-self: stretch;
+            justify-content: center;
+        }
+        
+        /* 移动端单张图片优化 */
+        .single-image-container {
+            max-width: 100%;
+            margin: 0;
+        }
+        
+        .single-image {
+            max-height: 300px;
+        }
+        
+        .post-text {
+            font-size: 1rem;
+            max-width: 100%;
+        }
+    }
+    
+    /* 平板端优化 */
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .post-attachments {
+            padding: 1.25rem;
+        }
+        
+        .attachment-item {
+            padding: 0.875rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .post-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .single-image {
+            max-height: 250px;
+        }
+        
+        .post-topic {
+            padding: 0.75rem;
+        }
+        
+        .post-attachments {
+            padding: 0.75rem;
+        }
+        
+        .attachment-name {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-nav">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/forum">Questions</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ post.title[:50] + '...' if post and post.title|length > 50 else (post.title if post else 'Question Details') }}
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Post Container -->
+    <div class="post-container">
+        <!-- Post Header -->
+        <div class="post-header">
+            <div class="post-meta-bar">
+                <div class="d-flex align-items-center">
+                    <span class="post-category category-{{ post.category if post else 'questions' }}">
+                        {% if post.category == 'homework' %}
+                            <i class="fas fa-pencil-alt me-2"></i>Homework & Notes
+                        {% elif post.category == 'experience' %}
+                            <i class="fas fa-lightbulb me-2"></i>Experience Sharing
+                        {% elif post.category == 'activities' %}
+                            <i class="fas fa-calendar-alt me-2"></i>School Activities
+                        {% elif post.category == 'questions' %}
+                            <i class="fas fa-question-circle me-2"></i>Questions & Help
+                        {% elif post.category == 'books' %}
+                            <i class="fas fa-book me-2"></i>Books
+                        {% else %}
+                            <i class="fas fa-tag me-2"></i>{{ post.category.title() }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="post-stats">
+                    <div class="post-stat">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>{{ post.created_at | beijing_time if post else 'Today' }}</span>
+                    </div>
+                    <div class="post-stat">
+                        <i class="fas fa-eye"></i>
+                        <span>{{ post.view_count if post else '0' }}</span>
+                    </div>
+                    <div class="post-stat">
+                        <i class="fas fa-comments"></i>
+                        <span>{{ post.comments|length if post and post.comments else '0' }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h1 class="post-title">
+                {{ post.title if post else 'Sample Post Title: Need Help with Integration by Parts' }}
+            </h1>
+        </div>
+        
+        <!-- Author Info -->
+        <div class="author-info">
+            <div class="author-avatar">
+                {{ (post.author.username[0].upper() if post and post.author else 'A') }}
+            </div>
+            <div class="author-details">
+                <h6>{{ post.author.username if post and post.author else 'Anonymous User' }}</h6>
+                <div class="author-meta">
+                    <i class="fas fa-user-clock me-1"></i>
+                    Member since {{ post.author.created_at.strftime('%B %Y') if post and post.author else 'January 2024' }}
+                    <span class="author-role role-{{ post.author.user_role if post and post.author else 'student' }}">
+                        {{ post.author.user_role.title() if post and post.author else 'Student' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Post Content -->
+        <div class="post-content">
+            <!-- Cover Image -->
+            {% if post and post.cover_image %}
+            <div class="post-images">
+                <div class="single-image-container">
+                    {% if post.cover_image.startswith('http') %}
+                        <img src="{{ post.cover_image }}" alt="Cover Image" class="single-image" onclick="openImageModal(this)">
+                    {% else %}
+                        <img src="{{ post.cover_image | image_url }}" alt="Cover Image" class="single-image" onclick="openImageModal(this)">
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Topic Display -->
+            {% if post and post.topic %}
+            <div class="post-topic">
+                <div class="topic-label">
+                    <i class="fas fa-tag me-2"></i>
+                    <strong>Topic:</strong>
+                </div>
+                <div class="topic-value">{{ post.topic }}</div>
+            </div>
+            {% endif %}
+            
+            <!-- Attachments -->
+            {% if post and post.attachments and post.attachments|length > 0 %}
+            <div class="post-attachments">
+                <div class="attachments-header">
+                    <i class="fas fa-paperclip me-2"></i>
+                    <strong>Attachments ({{ post.attachments|length }})</strong>
+                </div>
+                <div class="attachments-list">
+                    {% for attachment in post.attachments %}
+                    <div class="attachment-item">
+                        <div class="attachment-icon">
+                            {% if attachment.name.lower().endswith(('.pdf', '.doc', '.docx')) %}
+                                <i class="fas fa-file-pdf text-danger"></i>
+                            {% elif attachment.name.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')) %}
+                                <i class="fas fa-file-image text-success"></i>
+                            {% elif attachment.name.lower().endswith(('.zip', '.rar', '.7z')) %}
+                                <i class="fas fa-file-archive text-warning"></i>
+                            {% elif attachment.name.lower().endswith(('.txt', '.md')) %}
+                                <i class="fas fa-file-alt text-info"></i>
+                            {% else %}
+                                <i class="fas fa-file text-muted"></i>
+                            {% endif %}
+                        </div>
+                        <div class="attachment-info">
+                            <div class="attachment-name">{{ attachment.name }}</div>
+                            <div class="attachment-size">
+                                {% if attachment.size < 1024 %}
+                                    {{ attachment.size }} B
+                                {% elif attachment.size < 1024 * 1024 %}
+                                    {{ '%.1f' | format(attachment.size / 1024) }} KB
+                                {% else %}
+                                    {{ '%.1f' | format(attachment.size / 1024 / 1024) }} MB
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="attachment-actions">
+                            <a href="/download/{{ attachment.id }}" class="attachment-download-btn" target="_blank">
+                                <i class="fas fa-download me-1"></i>
+                                Download
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Post Text Content -->
+            <div class="post-text">
+                {% if post and post.content %}
+                    {% for paragraph in post.content.split('\n') %}
+                        {% if paragraph.strip() %}
+                            <p>{{ paragraph.strip() }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- Sample content for demonstration -->
+                    <p>I'm currently working on A-Level mathematics and having trouble understanding integration by parts. I've been trying to solve some practice problems but I keep getting stuck on when to apply the LIATE rule.</p>
+                    
+                    <p>Could someone please explain:</p>
+                    <ul>
+                        <li>How to determine which function should be u and which should be dv</li>
+                        <li>Any tips for remembering the LIATE order (Logarithmic, Inverse trig, Algebraic, Trigonometric, Exponential)</li>
+                        <li>Common mistakes to avoid when applying integration by parts</li>
+                    </ul>
+                    
+                    <p>I have my A-Level exams coming up and really want to master this topic. Thanks in advance to anyone who can help!</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Post Actions -->
+        <div class="post-actions">
+            <div class="action-buttons">
+                <button class="action-btn" id="likeBtn">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Like</span>
+                </button>
+                <button class="action-btn" id="bookmarkBtn">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Save</span>
+                </button>
+                <button class="action-btn" id="shareBtn">
+                    <i class="fas fa-share"></i>
+                    <span>Share</span>
+                </button>
+            </div>
+            <div class="d-flex align-items-center">
+                <small class="text-muted">
+                    <i class="fas fa-flag me-1"></i>
+                    <a href="#" class="text-muted text-decoration-none">Report</a>
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <h4>
+                <i class="fas fa-comments me-2"></i>
+                Discussion
+            </h4>
+            <div class="comments-count">
+                {{ post.comments|length if post and post.comments else '0' }} 
+                {{ 'comment' if (post.comments|length == 1) else 'comments' }}
+            </div>
+        </div>
+        
+        <div class="comments-list">
+            {% if post and post.comments %}
+                {% for comment in post.comments %}
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <div class="comment-avatar">{{ comment.author.username[0].upper() }}</div>
+                        <div>
+                            <span class="comment-author">{{ comment.author.username }}</span>
+                            <span class="comment-meta">
+                                • {{ comment.created_at | beijing_time }}
+                                {% if comment.author.user_role != 'student' %}
+                                    • <span class="author-role role-{{ comment.author.user_role }}">{{ comment.author.user_role.title() }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="comment-content">{{ comment.content }}</div>
+                    <div class="comment-actions">
+                        <span class="comment-action comment-like-btn" data-comment-id="{{ comment.id }}" data-liked="{{ comment.user_liked|lower }}">
+                            <i class="fas fa-thumbs-up {{ 'liked' if comment.user_liked else '' }}"></i>
+                            <span class="like-count">{{ comment.like_count or 0 }}</span>
+                        </span>
+                        <span class="comment-action">
+                            <i class="fas fa-reply"></i>
+                            <span>Reply</span>
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-comments">
+                    <i class="fas fa-comments"></i>
+                    <h5>No comments yet</h5>
+                    <p>Be the first to share your thoughts!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Comment Form -->
+        <div class="comment-form">
+            <form id="commentForm" action="/forum/post/{{ post.id if post else '1' }}/comment" method="POST">
+                <div class="mb-3">
+                    <label for="comment" class="form-label fw-semibold">
+                        <i class="fas fa-comment me-2"></i>Add your comment
+                        {% if not current_user.is_authenticated %}
+                        <small class="text-muted ms-2">(as Anonymous)</small>
+                        {% endif %}
+                    </label>
+                    <textarea id="comment" name="content" class="form-control" 
+                              placeholder="Share your thoughts, provide help, or ask follow-up questions..." 
+                              required maxlength="1000"></textarea>
+                    <small class="text-muted mt-2 d-block">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Be respectful and constructive in your comments. 
+                        <span id="commentCount">0</span> / 1000 characters
+                        {% if not current_user.is_authenticated %}
+                        <br><i class="fas fa-user-shield me-1"></i>
+                        Your comment will be posted as Anonymous. <a href="{{ url_for('login') }}">Login</a> to post with your username.
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Post Comment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal">
+    <button class="modal-close" onclick="closeImageModal()">&times;</button>
+    <img id="modalImage" class="modal-image">
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Comment character counter
+    const commentTextarea = document.getElementById('comment');
+    const commentCount = document.getElementById('commentCount');
+    
+    if (commentTextarea && commentCount) {
+        commentTextarea.addEventListener('input', function() {
+            commentCount.textContent = this.value.length;
+        });
+    }
+    
+    // Action buttons functionality
+    const likeBtn = document.getElementById('likeBtn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-thumbs-up';
+                text.textContent = 'Liked';
+                this.style.color = 'var(--color-primary)';
+            } else {
+                icon.className = 'fas fa-thumbs-up';
+                text.textContent = 'Like';
+                this.style.color = '';
+            }
+        });
+    }
+    
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-bookmark';
+                text.textContent = 'Saved';
+                this.style.color = '#059669';
+            } else {
+                icon.className = 'fas fa-bookmark';
+                text.textContent = 'Save';
+                this.style.color = '';
+            }
+        });
+    }
+    
+    const shareBtn = document.getElementById('shareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const text = this.querySelector('span');
+                    const originalText = text.textContent;
+                    text.textContent = 'Copied!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        });
+    }
+    
+    // Comment form handling
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            const textarea = this.querySelector('textarea[name="content"]');
+            const content = textarea.value.trim();
+            
+            if (!content) {
+                e.preventDefault();
+                alert('Please enter a comment before submitting.');
+                return;
+            }
+            
+            if (content.length > 1000) {
+                e.preventDefault();
+                alert('Comment is too long (maximum 1000 characters).');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Posting...';
+            submitBtn.disabled = true;
+            
+            // Let the form submit naturally - no preventDefault
+        });
+    }
+    
+    // Comment like functionality
+    const commentLikeBtns = document.querySelectorAll('.comment-like-btn');
+    commentLikeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            const isLiked = this.getAttribute('data-liked') === 'true';
+            
+            // Send AJAX request
+            fetch(`/forum/comment/${commentId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.like-count');
+                    
+                    if (data.liked) {
+                        // User liked the comment
+                        this.classList.add('liked');
+                        this.setAttribute('data-liked', 'true');
+                        icon.style.color = 'var(--color-primary)';
+                    } else {
+                        // User unliked the comment
+                        this.classList.remove('liked');
+                        this.setAttribute('data-liked', 'false');
+                        icon.style.color = '';
+                    }
+                    
+                    // Update like count
+                    countSpan.textContent = data.like_count;
+                } else {
+                    console.error('Failed to toggle like:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+
+// Image modal functionality
+function openImageModal(img) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    
+    modal.style.display = 'block';
+    modalImg.src = img.src;
+    modalImg.alt = img.alt;
+    
+    // Add click to close
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeImageModal();
+        }
+    });
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+</script>
+{% endblock %}

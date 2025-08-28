@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Subjects Overview - STEM Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .subjects-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .category-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .category-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .category-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+    
+    .category-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .resource-count {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .featured-resource {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .featured-resource:hover {
+        background: #f1f5f9;
+        transform: translateX(4px);
+    }
+    
+    .featured-resource h6 {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .featured-resource .meta {
+        font-size: 0.75rem;
+        color: #6b7280;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Subjects Header -->
+<div class="subjects-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h2 mb-3">Academic Resources by Subject</h1>
+                <p class="mb-0 opacity-75">
+                    Explore our comprehensive collection of educational resources organized by academic level and competition categories
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('index') }}" class="back-btn">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Mathematics -->
+        <div class="col-lg-6 mb-4">
+            <a href="{{ url_for('subjects_category', subject='math') }}" class="category-card d-block">
+                <div class="category-icon bg-primary mx-auto">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="text-center mb-2">Mathematics</h3>
+                <p class="text-center text-muted mb-3">
+                    Comprehensive mathematics resources covering IGCSE, A-Level, AP, Competition, and University levels
+                </p>
+                
+                <div class="category-stats">
+                    <div>
+                        <div class="resource-count">{{ subject_counts.get('math', 0) }}</div>
+                        <small class="text-muted">Resources Available</small>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                    </div>
+                </div>
+                
+                {% if featured_resources.get('math') %}
+                <div class="mt-3">
+                    <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
+                    {% for resource in featured_resources['math'][:2] %}
+                    <div class="featured-resource">
+                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                        <div class="meta">
+                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </a>
+        </div>
+        
+        <!-- Physics -->
+        <div class="col-lg-6 mb-4">
+            <a href="{{ url_for('subjects_category', subject='physics') }}" class="category-card d-block">
+                <div class="category-icon bg-success mx-auto">
+                    <i class="fas fa-atom"></i>
+                </div>
+                <h3 class="text-center mb-2">Physics</h3>
+                <p class="text-center text-muted mb-3">
+                    Physics resources covering mechanics, electromagnetism, quantum physics, and more across all levels
+                </p>
+                
+                <div class="category-stats">
+                    <div>
+                        <div class="resource-count">{{ subject_counts.get('physics', 0) }}</div>
+                        <small class="text-muted">Resources Available</small>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                    </div>
+                </div>
+                
+                {% if featured_resources.get('physics') %}
+                <div class="mt-3">
+                    <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
+                    {% for resource in featured_resources['physics'][:2] %}
+                    <div class="featured-resource">
+                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                        <div class="meta">
+                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </a>
+        </div>
+        
+        <!-- Chemistry -->
+        <div class="col-lg-6 mb-4">
+            <a href="{{ url_for('subjects_category', subject='chemistry') }}" class="category-card d-block">
+                <div class="category-icon bg-warning mx-auto">
+                    <i class="fas fa-flask"></i>
+                </div>
+                <h3 class="text-center mb-2">Chemistry</h3>
+                <p class="text-center text-muted mb-3">
+                    Organic, inorganic, and physical chemistry resources with detailed mechanisms and reactions
+                </p>
+                
+                <div class="category-stats">
+                    <div>
+                        <div class="resource-count">{{ subject_counts.get('chemistry', 0) }}</div>
+                        <small class="text-muted">Resources Available</small>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-arrow-right fa-2x text-warning"></i>
+                    </div>
+                </div>
+                
+                {% if featured_resources.get('chemistry') %}
+                <div class="mt-3">
+                    <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
+                    {% for resource in featured_resources['chemistry'][:2] %}
+                    <div class="featured-resource">
+                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                        <div class="meta">
+                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </a>
+        </div>
+        
+        <!-- Biology -->
+        <div class="col-lg-6 mb-4">
+            <a href="{{ url_for('subjects_category', subject='biology') }}" class="category-card d-block">
+                <div class="category-icon bg-info mx-auto">
+                    <i class="fas fa-dna"></i>
+                </div>
+                <h3 class="text-center mb-2">Biology</h3>
+                <p class="text-center text-muted mb-3">
+                    Cell biology, genetics, ecology, evolution, and human biology resources across all levels
+                </p>
+                
+                <div class="category-stats">
+                    <div>
+                        <div class="resource-count">{{ subject_counts.get('biology', 0) }}</div>
+                        <small class="text-muted">Resources Available</small>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-arrow-right fa-2x text-info"></i>
+                    </div>
+                </div>
+                
+                {% if featured_resources.get('biology') %}
+                <div class="mt-3">
+                    <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
+                    {% for resource in featured_resources['biology'][:2] %}
+                    <div class="featured-resource">
+                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                        <div class="meta">
+                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </a>
+        </div>
+
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="category-card text-center">
+                <h4 class="mb-3">Platform Statistics</h4>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="resource-count">{{ subject_counts.values()|sum }}</div>
+                        <small class="text-muted">Total Resources</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="resource-count">5</div>
+                        <small class="text-muted">Subject Categories</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="resource-count">6</div>
+                        <small class="text-muted">Resource Types</small>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="resource-count">3</div>
+                        <small class="text-muted">Difficulty Levels</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

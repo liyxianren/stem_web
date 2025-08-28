@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block title %}Community Questions - Science Academic Club{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Forum Styles */
+    .forum-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .category-tabs {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .category-btn {
+        background: transparent;
+        border: 2px solid #e2e8f0;
+        color: var(--color-neutral);
+        padding: 0.75rem 1.25rem;
+        border-radius: 25px;
+        margin: 0.25rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+    
+    .category-btn.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .category-btn:hover:not(.active) {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+    
+    .category-btn .count {
+        background: rgba(255,255,255,0.2);
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+    }
+    
+    .post-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    
+    .post-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    }
+    
+    .post-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .post-card:hover .post-image {
+        transform: scale(1.05);
+    }
+    
+    .post-content {
+        padding: 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .post-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+    
+    .category-books { background: #ede9fe; color: #7c3aed; }
+    .category-homework { background: #dbeafe; color: #2563eb; }
+    .category-experience { background: #dcfce7; color: #16a34a; }
+    .category-activities { background: #fef3c7; color: #d97706; }
+    .category-questions { background: #fee2e2; color: #dc2626; }
+    
+    .post-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-neutral-dark);
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    .post-excerpt {
+        color: var(--color-neutral);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    
+    .post-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--color-neutral);
+        border-top: 1px solid #f1f5f9;
+        padding-top: 0.75rem;
+        margin-top: auto;
+    }
+    
+    .post-author {
+        display: flex;
+        align-items: center;
+    }
+    
+    .post-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .new-post-btn {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        border: none;
+        padding: 0.875rem 1.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+    
+    .new-post-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+        color: white;
+    }
+    
+    .stats-summary {
+        background: white;
+        padding: 1.25rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .forum-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+    
+    .forum-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem;
+        color: var(--color-neutral);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+    
+    .post-preview {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .preview-content {
+        padding: 1.5rem;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .preview-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .preview-attachments {
+        background: white;
+        border-radius: 8px;
+        padding: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+    }
+    
+    .attachment-label {
+        font-size: 0.8rem;
+        color: var(--color-primary);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .attachment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .attachment-item {
+        font-size: 0.75rem;
+        color: var(--color-neutral);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem;
+        background: #f8fafc;
+        border-radius: 4px;
+    }
+    
+    .attachment-name {
+        margin-left: 0.25rem;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    .more-attachments {
+        font-size: 0.7rem;
+        color: var(--color-neutral);
+        font-style: italic;
+        text-align: center;
+        padding-top: 0.25rem;
+    }
+    
+    .no-attachments {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .category-btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        .post-image {
+            height: 150px;
+        }
+        
+        .post-preview {
+            height: 150px;
+        }
+        
+        .preview-content {
+            padding: 1rem;
+        }
+        
+        .preview-title {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Forum Header -->
+<div class="forum-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-2 text-white">Community Questions</h1>
+                <p class="fs-5 mb-0" style="opacity: 0.9;">
+                    Ask questions, share knowledge, and get help from fellow STEM students
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="/forum/new-post" class="new-post-btn">
+                    <i class="fas fa-plus me-2"></i>
+                    New Question
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forum Content -->
+<div class="container">
+    <!-- Stats Summary -->
+    <div class="stats-summary">
+        <div class="row text-center">
+            <div class="col-6 col-md-3">
+                <div class="fw-bold text-primary fs-4">{{ stats.total_posts }}</div>
+                <small class="text-muted">Total Posts</small>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold text-success fs-4">{{ stats.active_members }}</div>
+                <small class="text-muted">Active Members</small>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold text-warning fs-4">{{ stats.this_week }}</div>
+                <small class="text-muted">This Week</small>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold text-info fs-4">{{ stats.today }}</div>
+                <small class="text-muted">Today</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <button class="category-btn active" data-category="all">
+                All Posts <span class="count">{{ stats.total_posts }}</span>
+            </button>
+            <button class="category-btn" data-category="books">
+                Books <span class="count">{{ stats.category_stats.books }}</span>
+            </button>
+            <button class="category-btn" data-category="homework">
+                Homework & Notes <span class="count">{{ stats.category_stats.homework }}</span>
+            </button>
+            <button class="category-btn" data-category="experience">
+                Experience Sharing <span class="count">{{ stats.category_stats.experience }}</span>
+            </button>
+            <button class="category-btn" data-category="activities">
+                School Activities <span class="count">{{ stats.category_stats.activities }}</span>
+            </button>
+            <button class="category-btn" data-category="questions">
+                Questions & Help <span class="count">{{ stats.category_stats.questions }}</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Posts Grid -->
+    <div class="row g-4" id="postsGrid">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="col-md-6 col-lg-4 post-item" data-category="{{ post.category }}">
+                <a href="/forum/post/{{ post.id }}" class="forum-link">
+                    <div class="post-card">
+                        {% if post.cover_image %}
+                            <!-- Display cover image if available -->
+                            <img src="{{ post.cover_image | image_url }}" alt="{{ post.title }}" class="post-image">
+                        {% else %}
+                            <!-- Display title and attachments instead of default image -->
+                            <div class="post-preview">
+                                <div class="preview-content">
+                                    <h6 class="preview-title">{{ post.title }}</h6>
+                                    {% if post.attachments %}
+                                        <div class="preview-attachments">
+                                            <div class="attachment-label">
+                                                <i class="fas fa-paperclip me-1"></i>
+                                                Attachments ({{ post.attachments|length }})
+                                            </div>
+                                            <div class="attachment-list">
+                                                {% for attachment in post.attachments[:3] %}
+                                                <div class="attachment-item">
+                                                    <i class="fas fa-file me-1"></i>
+                                                    <span class="attachment-name">{{ attachment.name }}</span>
+                                                </div>
+                                                {% endfor %}
+                                                {% if post.attachments|length > 3 %}
+                                                <div class="more-attachments">
+                                                    +{{ post.attachments|length - 3 }} more files
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="no-attachments">
+                                            <i class="fas fa-file-alt text-muted me-1"></i>
+                                            <span class="text-muted">No attachments</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="post-content">
+                            <span class="post-category category-{{ post.category }}">
+                                {% if post.category == 'homework' %}
+                                    Homework & Notes
+                                {% elif post.category == 'experience' %}
+                                    Experience Sharing
+                                {% elif post.category == 'activities' %}
+                                    School Activities
+                                {% elif post.category == 'questions' %}
+                                    Questions & Help
+                                {% else %}
+                                    {{ post.category.title() }}
+                                {% endif %}
+                            </span>
+                            <h5 class="post-title">{{ post.title }}</h5>
+                            <p class="post-excerpt">
+                                {{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}
+                            </p>
+                            <div class="post-meta">
+                                <div class="post-author">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    <span>{{ post.author_name }}</span>
+                                </div>
+                                <div class="post-stats">
+                                    <span><i class="fas fa-eye me-1"></i>{{ post.view_count or 0 }}</span>
+                                    <span><i class="fas fa-comments me-1"></i>{{ post.reply_count or 0 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-question-circle"></i>
+                    <h4>No questions found</h4>
+                    <p>Be the first to ask a question!</p>
+                    <a href="{% if current_user.is_authenticated %}/forum/new-post{% else %}/login{% endif %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-plus me-2"></i>
+                        Ask First Question{% if not current_user.is_authenticated %} (Login Required){% endif %}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav aria-label="Forum posts pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Empty State (hidden by default) -->
+<div class="container d-none" id="emptyState">
+    <div class="empty-state">
+        <i class="fas fa-comments"></i>
+        <h4>No posts in this category</h4>
+        <p>Be the first to share something in this category!</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const postItems = document.querySelectorAll('.post-item');
+    const postsGrid = document.getElementById('postsGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    // Category filter functionality
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active state
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.getAttribute('data-category');
+            filterPosts(category);
+        });
+    });
+    
+    function filterPosts(category) {
+        let visibleCount = 0;
+        
+        postItems.forEach(item => {
+            const itemCategory = item.getAttribute('data-category');
+            
+            if (category === 'all' || itemCategory === category) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Show/hide empty state
+        if (visibleCount === 0) {
+            postsGrid.style.display = 'none';
+            emptyState.classList.remove('d-none');
+        } else {
+            postsGrid.style.display = 'flex';
+            postsGrid.style.flexWrap = 'wrap';
+            emptyState.classList.add('d-none');
+        }
+    }
+    
+    // Add hover effects to post cards
+    postItems.forEach(item => {
+        const card = item.querySelector('.post-card');
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-6px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

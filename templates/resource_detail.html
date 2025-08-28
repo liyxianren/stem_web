@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resource.title if resource else 'Resource Details' }} - Science Academic Club{% endblock %}
+
+{% block extra_css %}
+<style>
+    .breadcrumb-nav {
+        background: rgba(248, 250, 252, 0.95);
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: "→";
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+    
+    .breadcrumb-item a {
+        color: var(--color-neutral);
+        text-decoration: none;
+    }
+    
+    .breadcrumb-item a:hover {
+        color: var(--color-primary);
+    }
+    
+    .breadcrumb-item.active {
+        color: var(--color-neutral-dark);
+    }
+
+    .resource-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        margin-top: 1.5rem;
+    }
+    
+    .resource-header {
+        padding: 2rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .resource-meta-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .resource-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .category-books { background: #ede9fe; color: #7c3aed; }
+    .category-homework { background: #dbeafe; color: #2563eb; }
+    .category-tests { background: #dcfce7; color: #16a34a; }
+    .category-notes { background: #fef3c7; color: #d97706; }
+    .category-questions { background: #fee2e2; color: #dc2626; }
+    
+    .resource-stats {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--color-neutral);
+    }
+    
+    .resource-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .resource-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-neutral-dark);
+        margin: 0;
+        line-height: 1.3;
+    }
+    
+    .author-info {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .author-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-right: 1rem;
+        box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+    }
+    
+    .author-details h6 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        font-size: 1.1rem;
+    }
+    
+    .author-details .author-meta {
+        color: var(--color-neutral);
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+    
+    .author-role {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+    
+    .role-admin { background: #fef3c7; color: #d97706; }
+    .role-moderator { background: #dcfce7; color: #16a34a; }
+    .role-student { background: #dbeafe; color: #2563eb; }
+    
+    .resource-content {
+        padding: 2rem;
+    }
+    
+    .resource-hierarchy {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .hierarchy-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .hierarchy-label {
+        color: var(--color-primary);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .hierarchy-value {
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+        background: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+    }
+    
+    .additional-images {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .resource-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border: 1px solid #e2e8f0;
+        background: white;
+        border-radius: 6px;
+        color: var(--color-neutral);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .action-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+        text-decoration: none;
+    }
+    
+    .action-btn.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+    }
+    
+    .action-btn i {
+        margin-right: 0.5rem;
+    }
+    
+    /* Modal for Image Lightbox */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        cursor: pointer;
+    }
+    
+    .modal-image {
+        display: block;
+        margin: auto;
+        max-width: 90%;
+        max-height: 90%;
+        margin-top: 5%;
+        border-radius: 8px;
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+    
+    .resource-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin: 1rem 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .resource-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .additional-images img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .additional-images img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .content-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--color-neutral-dark);
+    }
+    
+    .content-text p {
+        margin-bottom: 1.2rem;
+    }
+    
+    .content-text ul, .content-text ol {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+    
+    .content-text li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .resource-header {
+            padding: 1.5rem;
+        }
+        
+        .resource-content {
+            padding: 1.5rem;
+        }
+        
+        .resource-meta-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .resource-title {
+            font-size: 1.5rem;
+        }
+        
+        .author-info {
+            padding: 1rem 1.5rem;
+        }
+        
+        .resource-actions {
+            padding: 1rem 1.5rem;
+        }
+        
+        .resource-hierarchy {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .hierarchy-value {
+            align-self: stretch;
+            text-align: center;
+        }
+        
+        .content-text {
+            font-size: 1rem;
+        }
+        
+        .additional-images {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .additional-images img {
+            max-width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .content-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .resource-hierarchy {
+            padding: 0.75rem;
+        }
+        
+        .hierarchy-item {
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .hierarchy-value {
+            margin-top: 0.25rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-nav">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/resources">Resources</a>
+                </li>
+                {% if resource %}
+                <li class="breadcrumb-item">
+                    <a href="/subjects/{{ resource.subject }}">{{ resource.subject.title() }}</a>
+                </li>
+                {% set education_level = 'igcse' if resource.category == 'IGCSE' else ('alevel' if resource.category == 'A-LEVEL' else ('ap' if resource.category == 'AP' else ('competition' if resource.category == 'COMP' else 'university'))) %}
+                <li class="breadcrumb-item">
+                    <a href="/subjects/{{ resource.subject }}/{{ education_level }}">{{ education_level.title() }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/subjects/{{ resource.subject }}/{{ education_level }}/{{ resource.category.lower() }}">{{ resource.category.title() }}</a>
+                </li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ resource.title[:50] + '...' if resource and resource.title|length > 50 else (resource.title if resource else 'Resource Details') }}
+                </li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Resource Container -->
+    <div class="resource-container">
+        <!-- Resource Header -->
+        <div class="resource-header">
+            <div class="resource-meta-bar">
+                <div class="d-flex align-items-center">
+                    <span class="resource-category category-{{ resource.category if resource else 'books' }}">
+                        {% if resource and resource.category == 'books' %}
+                            <i class="fas fa-book me-2"></i>Books
+                        {% elif resource and resource.category == 'homework' %}
+                            <i class="fas fa-pencil-alt me-2"></i>Homework
+                        {% elif resource and resource.category == 'tests' %}
+                            <i class="fas fa-clipboard-check me-2"></i>Tests
+                        {% elif resource and resource.category == 'notes' %}
+                            <i class="fas fa-sticky-note me-2"></i>Notes
+                        {% elif resource and resource.category == 'questions' %}
+                            <i class="fas fa-question-circle me-2"></i>Questions
+                        {% else %}
+                            <i class="fas fa-tag me-2"></i>{{ resource.category.title() if resource else 'Books' }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="resource-stats">
+                    <div class="resource-stat">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>{{ resource.created_at | beijing_time if resource else 'Today' }}</span>
+                    </div>
+                    <div class="resource-stat">
+                        <i class="fas fa-eye"></i>
+                        <span>{{ resource.view_count if resource else '0' }}</span>
+                    </div>
+                    <div class="resource-stat">
+                        <i class="fas fa-download"></i>
+                        <span>{{ resource.download_count if resource else '0' }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h1 class="resource-title">
+                {{ resource.title if resource else 'Sample Resource: A-Level Mathematics Integration Guide' }}
+            </h1>
+        </div>
+        
+        <!-- Author Info -->
+        <div class="author-info">
+            <div class="author-avatar">
+                {{ (resource.author_name[0].upper() if resource and resource.author_name else 'A') }}
+            </div>
+            <div class="author-details">
+                <h6>{{ resource.author_name if resource and resource.author_name else 'Anonymous User' }}</h6>
+                <div class="author-meta">
+                    <i class="fas fa-user-clock me-1"></i>
+                    Uploaded {{ resource.created_at.strftime('%B %Y') if resource else 'January 2024' }}
+                    <span class="author-role role-student">
+                        Contributor
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resource Content -->
+        <div class="resource-content">
+            <!-- Cover Image -->
+            {% if resource and resource.cover_image %}
+            <div class="text-center mb-4">
+                <img src="{{ resource.cover_image | image_url }}" alt="{{ resource.title }}" class="resource-image" onclick="openImageModal(this)">
+            </div>
+            {% endif %}
+            
+            <!-- Three-tier Hierarchy Display -->
+            <div class="resource-hierarchy">
+                <div class="hierarchy-item">
+                    <div class="hierarchy-label">Subject:</div>
+                    <div class="hierarchy-value">{{ resource.subject.title() if resource else 'Math' }}</div>
+                </div>
+                <div class="hierarchy-item">
+                    <div class="hierarchy-label">Level:</div>
+                    {% if resource %}
+                        {% set level_display = 'IGCSE' if resource.category == 'IGCSE' else ('A-Level' if resource.category == 'A-LEVEL' else ('AP' if resource.category == 'AP' else ('Competition' if resource.category == 'COMP' else 'University'))) %}
+                        <div class="hierarchy-value">{{ level_display }}</div>
+                    {% else %}
+                        <div class="hierarchy-value">A-Level</div>
+                    {% endif %}
+                </div>
+                <div class="hierarchy-item">
+                    <div class="hierarchy-label">Type:</div>
+                    <div class="hierarchy-value">{{ resource.category.title() if resource else 'Books' }}</div>
+                </div>
+            </div>
+            
+            <!-- Resource Text Content -->
+            <div class="content-text">
+                {% if resource and resource.content %}
+                    {{ resource.content|replace('\n', '<br>')|safe }}
+                {% else %}
+                    <!-- Sample content for demonstration -->
+                    <p>This comprehensive guide covers integration by parts for A-Level mathematics students. It includes step-by-step examples, practice problems, and detailed explanations of the LIATE rule.</p>
+                    
+                    <p>Contents include:</p>
+                    <ul>
+                        <li>Understanding the integration by parts formula</li>
+                        <li>When to use integration by parts vs other techniques</li>
+                        <li>The LIATE rule explained with examples</li>
+                        <li>Common mistakes and how to avoid them</li>
+                        <li>Practice problems with worked solutions</li>
+                    </ul>
+                    
+                    <p>Perfect for students preparing for A-Level mathematics exams or anyone looking to master this essential calculus technique.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Additional Images -->
+            {% if resource and resource.additional_images %}
+            <div class="additional-images">
+                {% set image_list = resource.additional_images.split(',') %}
+                {% for image in image_list %}
+                    {% if image.strip() %}
+                        <img src="{{ image.strip() | image_url }}" alt="Additional resource image" onclick="openImageModal(this)">
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Resource Actions -->
+        <div class="resource-actions">
+            <div class="action-buttons">
+                <button class="action-btn" id="likeBtn" onclick="likeResource()">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Like</span>
+                </button>
+                <button class="action-btn" id="bookmarkBtn">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Save</span>
+                </button>
+                <button class="action-btn" id="shareBtn">
+                    <i class="fas fa-share"></i>
+                    <span>Share</span>
+                </button>
+                <a href="/download/resource/{{ resource.id if resource else '1' }}" class="action-btn">
+                    <i class="fas fa-download"></i>
+                    <span>Download</span>
+                </a>
+            </div>
+            <div class="d-flex align-items-center">
+                <small class="text-muted">
+                    <i class="fas fa-flag me-1"></i>
+                    <a href="#" class="text-muted text-decoration-none">Report</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal">
+    <button class="modal-close" onclick="closeImageModal()">&times;</button>
+    <img id="modalImage" class="modal-image">
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Action buttons functionality
+    const likeBtn = document.getElementById('likeBtn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-thumbs-up';
+                text.textContent = 'Liked';
+                this.style.color = 'var(--color-primary)';
+            } else {
+                icon.className = 'fas fa-thumbs-up';
+                text.textContent = 'Like';
+                this.style.color = '';
+            }
+        });
+    }
+    
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('active')) {
+                icon.className = 'fas fa-bookmark';
+                text.textContent = 'Saved';
+                this.style.color = '#059669';
+            } else {
+                icon.className = 'fas fa-bookmark';
+                text.textContent = 'Save';
+                this.style.color = '';
+            }
+        });
+    }
+    
+    const shareBtn = document.getElementById('shareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const text = this.querySelector('span');
+                    const originalText = text.textContent;
+                    text.textContent = 'Copied!';
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        });
+    }
+});
+
+// Image modal functionality
+function openImageModal(img) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    
+    modal.style.display = 'block';
+    modalImg.src = img.src;
+    modalImg.alt = img.alt;
+    
+    // Add click to close
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeImageModal();
+        }
+    });
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

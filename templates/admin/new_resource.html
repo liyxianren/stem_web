@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Resource - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .form-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        color: var(--color-primary);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    }
+    
+    .btn-primary {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        padding: 0.75rem 2rem;
+    }
+    
+    .btn-primary:hover {
+        background: var(--color-primary-dark);
+        border-color: var(--color-primary-dark);
+    }
+    
+    .image-upload-section {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .image-upload-section:hover {
+        border-color: var(--color-primary);
+        background: #f8fafc;
+    }
+    
+    .image-upload-container {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .image-upload-container:hover {
+        border-color: var(--color-primary);
+        background: #f8fafc;
+    }
+    
+    .image-upload-input {
+        display: none;
+    }
+    
+    .upload-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .image-upload-icon {
+        font-size: 3rem;
+        color: #9ca3af;
+    }
+    
+    .image-upload-text {
+        color: #6b7280;
+    }
+    
+    .category-select {
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    
+    .char-counter {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+    
+    .image-preview {
+        display: none;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .image-preview img {
+        max-width: 300px;
+        max-height: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .additional-images {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .additional-image-upload {
+        flex: 1;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .additional-image-upload:hover {
+        border-color: var(--color-primary);
+        background: #f8fafc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-plus-circle me-3"></i>
+                    Create New Resource
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Publish educational resources for students</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('admin_resources') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Resources
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <form method="POST" enctype="multipart/form-data" id="resourceForm">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-info-circle me-2"></i>Basic Information
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <label for="title" class="form-label fw-bold">
+                            <i class="fas fa-heading me-2"></i>Resource Title *
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                               required maxlength="200" placeholder="Enter an engaging title for your resource">
+                        <div class="char-counter">
+                            <span id="titleCount">0</span>/200 characters
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="subject" class="form-label fw-bold">
+                                <i class="fas fa-book me-2"></i>Subject *
+                            </label>
+                            <select class="form-select category-select" id="subject" name="subject" required>
+                                <option value="" disabled selected>Select subject</option>
+                                <option value="math">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="education_level" class="form-label fw-bold">
+                                <i class="fas fa-graduation-cap me-2"></i>Education Level *
+                            </label>
+                            <select class="form-select category-select" id="education_level" name="education_level" required>
+                                <option value="" disabled selected>Select education level</option>
+                                <option value="igcse">IGCSE</option>
+                                <option value="alevel">A-Level</option>
+                                <option value="ap">AP (Advanced Placement)</option>
+                                <option value="competition">Competition</option>
+                                <option value="university">University</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="resource_type" class="form-label fw-bold">
+                                <i class="fas fa-file-alt me-2"></i>Resource Type
+                            </label>
+                            <select class="form-select category-select" id="resource_type" name="resource_type" required>
+                                <option value="notes">Notes</option>
+                                <option value="past_paper">Past Paper</option>
+                                <option value="solution">Solution</option>
+                                <option value="tutorial">Tutorial</option>
+                                <option value="reference">Reference</option>
+                                <option value="guide">Guide</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="difficulty_level" class="form-label fw-bold">
+                            <i class="fas fa-chart-bar me-2"></i>Difficulty Level
+                        </label>
+                        <select class="form-select category-select" id="difficulty_level" name="difficulty_level" required>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate" selected>Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">
+                            <i class="fas fa-align-left me-2"></i>Brief Description
+                        </label>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  placeholder="Brief description of the resource content..."></textarea>
+                        <div class="form-text">A short summary that will appear in the resource listings</div>
+                    </div>
+                </div>
+
+                <!-- Cover Image -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-image me-2"></i>Cover Image
+                    </h3>
+                    
+                    <div class="image-upload-section" onclick="document.getElementById('cover_image').click()">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Upload Cover Image</h5>
+                        <p class="text-muted mb-0">Click to select an image or enter URL below</p>
+                        <input type="file" id="cover_image" name="cover_image" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="mt-3">
+                        <label for="cover_image_url" class="form-label">Or enter image URL:</label>
+                        <input type="url" class="form-control" id="cover_image_url" name="cover_image_url" 
+                               placeholder="https://example.com/image.jpg">
+                    </div>
+                    
+                    <div class="image-preview" id="coverImagePreview">
+                        <img src="" alt="Cover Preview" id="coverPreviewImg">
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-edit me-2"></i>Resource Content
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <label for="content" class="form-label fw-bold">
+                            Content *
+                        </label>
+                        <textarea class="form-control" id="content" name="content" rows="15" required
+                                  placeholder="Write your resource content here..."></textarea>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Use clear, educational language. Include explanations, examples, and step-by-step instructions where helpful.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Images -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-images me-2"></i>Additional Images
+                        <small class="text-muted">(Optional - up to 2 images)</small>
+                    </h3>
+                    
+                    <div class="image-upload-container" id="additionalImagesUpload" onclick="document.getElementById('additionalImagesInput').click()">
+                        <input type="file" name="additional_images" id="additionalImagesInput" 
+                               class="image-upload-input" accept="image/*" multiple>
+                        <div class="upload-content">
+                            <i class="fas fa-images image-upload-icon"></i>
+                            <div class="image-upload-text">
+                                <strong>Click to upload additional images</strong><br>
+                                or drag and drop<br>
+                                <small>PNG, JPG up to 5MB each (max 2 images)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="additionalImagesPreview"></div>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="form-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Ready to Publish?</h5>
+                            <p class="text-muted mb-0">Your resource will be immediately available to students</p>
+                        </div>
+                        <div>
+                            <a href="{{ url_for('admin_resources') }}" class="btn btn-outline-secondary me-3">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-rocket me-2"></i>Publish Resource
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter for title
+document.getElementById('title').addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('titleCount').textContent = count;
+    
+    const counter = document.getElementById('titleCount').parentElement;
+    if (count > 180) {
+        counter.className = 'char-counter text-warning';
+    } else if (count === 200) {
+        counter.className = 'char-counter text-danger';
+    } else {
+        counter.className = 'char-counter text-muted';
+    }
+});
+
+// Image preview functionality
+document.getElementById('cover_image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('coverImagePreview');
+            const img = document.getElementById('coverPreviewImg');
+            img.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// URL input for cover image
+document.getElementById('cover_image_url').addEventListener('input', function() {
+    const url = this.value.trim();
+    if (url && url.startsWith('http')) {
+        const preview = document.getElementById('coverImagePreview');
+        const img = document.getElementById('coverPreviewImg');
+        img.src = url;
+        preview.style.display = 'block';
+    }
+});
+
+// Form validation and custom submission
+document.getElementById('resourceForm').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    const content = document.getElementById('content').value.trim();
+    const education_level = document.getElementById('education_level').value;
+    
+    if (!title) {
+        alert('Please enter a resource title.');
+        e.preventDefault();
+        return;
+    }
+    
+    if (!content) {
+        alert('Please enter resource content.');
+        e.preventDefault();
+        return;
+    }
+    
+    if (!education_level) {
+        alert('Please select an education level.');
+        e.preventDefault();
+        return;
+    }
+    
+    // Prevent default form submission
+    e.preventDefault();
+    
+    // Create custom FormData with selected additional images
+    const formData = new FormData();
+    
+    // Add all form fields
+    const formElements = this.elements;
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+        if (element.name && element.name !== 'additional_images') {
+            if (element.type === 'file') {
+                if (element.files.length > 0) {
+                    formData.append(element.name, element.files[0]);
+                }
+            } else {
+                formData.append(element.name, element.value);
+            }
+        }
+    }
+    
+    // Add selected additional images
+    selectedAdditionalImages.forEach((fileObj) => {
+        formData.append('additional_images', fileObj.file);
+    });
+    
+    // Show loading state
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Publishing...';
+    submitBtn.disabled = true;
+    
+    // Submit using fetch
+    fetch(this.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.redirected) {
+            window.location.href = response.url;
+        } else {
+            return response.text().then(html => {
+                document.documentElement.innerHTML = html;
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while publishing the resource. Please try again.');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// Additional images handling
+let selectedAdditionalImages = [];
+const maxAdditionalImages = 2;
+const additionalImagesInput = document.getElementById('additionalImagesInput');
+const additionalImagesPreview = document.getElementById('additionalImagesPreview');
+
+function handleAdditionalImages(input) {
+    const files = Array.from(input.files);
+    
+    // Check if adding new files would exceed limit
+    if (selectedAdditionalImages.length + files.length > maxAdditionalImages) {
+        alert(`You can only upload up to ${maxAdditionalImages} additional images. You currently have ${selectedAdditionalImages.length} images selected.`);
+        input.value = '';
+        return;
+    }
+    
+    files.forEach((file) => {
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            alert('File size must be less than 5MB');
+            return;
+        }
+        
+        if (!file.type.startsWith('image/')) {
+            alert('Please select only image files');
+            return;
+        }
+        
+        // Add to selected array with unique ID
+        const fileId = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const fileObj = { file: file, id: fileId, name: file.name };
+        selectedAdditionalImages.push(fileObj);
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'image-preview-container d-inline-block me-3 mb-3';
+            imageContainer.setAttribute('data-file-id', fileId);
+            imageContainer.innerHTML = `
+                <div class="image-preview-wrapper position-relative">
+                    <img src="${e.target.result}" alt="Additional image preview" 
+                         style="max-width: 150px; max-height: 150px; border-radius: 8px; border: 2px solid #dee2e6;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 rounded-circle remove-image-btn" 
+                            style="width: 25px; height: 25px; margin: -5px;" data-file-id="${fileId}">
+                        <i class="fas fa-times" style="font-size: 0.7rem;"></i>
+                    </button>
+                </div>
+                <p class="text-success mt-1 mb-0 small text-center">
+                    <i class="fas fa-check me-1"></i>${file.name}
+                </p>
+            `;
+            additionalImagesPreview.appendChild(imageContainer);
+            
+            // Add event listener to the remove button
+            const removeBtn = imageContainer.querySelector('.remove-image-btn');
+            removeBtn.addEventListener('click', function() {
+                removeAdditionalImage(this.getAttribute('data-file-id'));
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+    
+    // Clear the input so the same file can be added again if removed and re-selected
+    input.value = '';
+}
+
+function removeAdditionalImage(fileId) {
+    // Remove from selectedAdditionalImages array
+    selectedAdditionalImages = selectedAdditionalImages.filter(fileObj => fileObj.id !== fileId);
+    
+    // Remove the preview element
+    const imageContainer = document.querySelector(`[data-file-id="${fileId}"]`);
+    if (imageContainer) {
+        imageContainer.remove();
+    }
+    
+    console.log('Removed image with ID:', fileId);
+    console.log('Remaining images:', selectedAdditionalImages.length);
+}
+
+if (additionalImagesInput) {
+    additionalImagesInput.addEventListener('change', function() {
+        handleAdditionalImages(this);
+    });
+    
+    // Add drag and drop functionality
+    const uploadContainer = document.getElementById('additionalImagesUpload');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight(e) {
+        uploadContainer.style.borderColor = 'var(--color-primary)';
+        uploadContainer.style.backgroundColor = '#f8fafc';
+    }
+    
+    function unhighlight(e) {
+        uploadContainer.style.borderColor = '#d1d5db';
+        uploadContainer.style.backgroundColor = '';
+    }
+    
+    uploadContainer.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        // Create a mock input element with the dropped files
+        const mockInput = {
+            files: files
+        };
+        
+        handleAdditionalImages(mockInput);
+    }
+}
+</script>
+{% endblock %}

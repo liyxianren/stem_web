@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Account Pending Approval - STEM Academic Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pending-section {
+        background: linear-gradient(135deg, var(--color-neutral-light) 0%, #fff 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* 背景装饰球体 */
+    .pending-section .blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        filter: blur(3rem);
+        opacity: 0.1;
+        pointer-events: none;
+    }
+    
+    .pending-section .blob-1 {
+        top: 10%;
+        right: 20%;
+        width: 15rem;
+        height: 15rem;
+        background-color: #f59e0b;
+        animation: blob 12s infinite;
+    }
+    
+    .pending-section .blob-2 {
+        bottom: 15%;
+        left: 10%;
+        width: 12rem;
+        height: 12rem;
+        background-color: #3b82f6;
+        animation: blob 12s infinite 4s;
+    }
+    
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.2); }
+        66% { transform: translate(-25px, 25px) scale(0.8); }
+    }
+    
+    .pending-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 2rem;
+        box-shadow: 0 25px 70px rgba(245, 158, 11, 0.15);
+        overflow: hidden;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .pending-header {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 2.5rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .pending-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 10s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+    }
+    
+    .pending-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    .pending-title {
+        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .pending-subtitle {
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+    
+    .pending-content {
+        padding: 2.5rem;
+        text-align: center;
+    }
+    
+    .status-card {
+        background: #fef3c7;
+        border: 2px solid #f59e0b;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .status-title {
+        color: #d97706;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .status-text {
+        color: #92400e;
+        line-height: 1.6;
+    }
+    
+    .info-section {
+        background: #f8fafc;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        text-align: left;
+    }
+    
+    .info-title {
+        color: var(--color-primary);
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .info-list li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        color: #6b7280;
+    }
+    
+    .info-list li i {
+        color: var(--color-primary);
+        margin-right: 0.75rem;
+        width: 1.25rem;
+        text-align: center;
+    }
+    
+    .btn-outline-warning {
+        border: 2px solid #f59e0b;
+        color: #f59e0b;
+        border-radius: 1rem;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-outline-warning:hover {
+        background: #f59e0b;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+    }
+    
+    .contact-section {
+        border-top: 1px solid #e5e7eb;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .contact-text {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pending-section">
+    <!-- 背景装饰球体 -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="pending-card">
+                    <div class="pending-header">
+                        <i class="fas fa-clock pending-icon"></i>
+                        <h1 class="pending-title">Account Pending Approval</h1>
+                        <p class="pending-subtitle mb-0">Your registration is currently under review</p>
+                    </div>
+                    
+                    <div class="pending-content">
+                        <div class="status-card">
+                            <div class="status-title">
+                                <i class="fas fa-hourglass-half me-2"></i>
+                                Current Status: Waiting for Approval
+                            </div>
+                            <div class="status-text">
+                                Your account has been successfully created and is now pending administrator review. 
+                                This process typically takes 1-2 business days.
+                            </div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-title">
+                                <i class="fas fa-info-circle me-2"></i>
+                                What happens next?
+                            </div>
+                            <ul class="info-list">
+                                <li>
+                                    <i class="fas fa-user-check"></i>
+                                    Our administrators will review your registration details
+                                </li>
+                                <li>
+                                    <i class="fas fa-school"></i>
+                                    We'll verify your school and student information
+                                </li>
+                                <li>
+                                    <i class="fas fa-envelope"></i>
+                                    You'll receive an email notification when your account is approved
+                                </li>
+                                <li>
+                                    <i class="fas fa-unlock"></i>
+                                    Once approved, you'll have full access to all platform features
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="info-section">
+                            <div class="info-title">
+                                <i class="fas fa-key me-2"></i>
+                                What can you access now?
+                            </div>
+                            <ul class="info-list">
+                                <li>
+                                    <i class="fas fa-eye"></i>
+                                    View public academic resources (limited access)
+                                </li>
+                                <li>
+                                    <i class="fas fa-user-cog"></i>
+                                    Update your profile information
+                                </li>
+                                <li>
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Sign out and back in to check status
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-grid gap-3">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-warning btn-lg">
+                                <i class="fas fa-home me-2"></i>Return to Homepage
+                            </a>
+                        </div>
+                        
+                        <div class="contact-section">
+                            <p class="contact-text">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Having issues or questions about your registration? 
+                            </p>
+                            <small class="text-muted">
+                                Please contact our support team if you don't receive approval within 3 business days.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 操作提示 -->
+                <div class="text-center mt-4">
+                    <div class="bg-white rounded-3 p-3 shadow-sm" style="border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <p class="text-muted small mb-0">
+                            <i class="fas fa-shield-alt me-2" style="color: #f59e0b;"></i>
+                            Account verification helps us maintain a secure learning environment for all students
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-refresh every 30 seconds to check if status has changed
+    setTimeout(function() {
+        // Only refresh if user is still on the page
+        if (document.visibilityState === 'visible') {
+            window.location.reload();
+        }
+    }, 30000);
+</script>
+{% endblock %}

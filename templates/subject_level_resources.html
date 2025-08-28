@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject_title }} - {{ level_title }} Resources - STEM Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 50%, #1d4ed8 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Add subtle pattern overlay */
+    .category-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    /* Breadcrumb and header content styles */
+    .breadcrumb-nav {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .breadcrumb-nav a {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-nav a:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .breadcrumb-nav .breadcrumb-divider {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0.75rem;
+        font-weight: 600;
+    }
+    
+    .breadcrumb-nav strong {
+        color: white;
+        font-weight: 700;
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+    }
+    
+    .category-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+        line-height: 1.2;
+    }
+    
+    .category-header p {
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+        opacity: 0.95 !important;
+        line-height: 1.4;
+    }
+    
+    .resource-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .resource-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .resource-card a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-card a:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-image-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: #94a3b8;
+        font-size: 3rem;
+    }
+    
+    .resource-meta {
+        margin-bottom: 1rem;
+    }
+    
+    .resource-meta .badge {
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .resource-stats {
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .resource-stats .stat {
+        display: inline-flex;
+        align-items: center;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+    
+    .resource-stats .stat i {
+        margin-right: 0.25rem;
+    }
+    
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .filter-section {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    .no-resources {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6b7280;
+    }
+    
+    .no-resources i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #d1d5db;
+    }
+    
+    /* Category Cards Styles */
+    .category-card {
+        background: white;
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0 !important;
+    }
+    
+    .category-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--color-primary) !important;
+    }
+    
+    /* 5-column layout support */
+    .col-md-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+    
+    @media (max-width: 991.98px) {
+        .col-md-2-4 {
+            width: 33.333333%;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .col-md-2-4 {
+            width: 50%;
+        }
+    }
+    
+    /* Category Icons */
+    .books-icon i { color: #8b5cf6; }
+    .homework-icon i { color: #ef4444; }
+    .tests-icon i { color: #f59e0b; }
+    .notes-icon i { color: #22c55e; }
+    .questions-icon i { color: #06b6d4; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Subject Header -->
+<div class="category-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h2 mb-3">{{ subject_title }} - {{ level_title }}</h1>
+                <p class="mb-0 opacity-75">
+                    {{ level_title }} level {{ subject_title.lower() }} resources including notes, past papers, solutions, and tutorials
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('subjects_overview') }}" class="back-btn">
+                    <i class="fas fa-arrow-left me-2"></i>All Subjects
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Filter by Type:</label>
+                <select class="form-select" id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="notes">Notes</option>
+                    <option value="past_paper">Past Papers</option>
+                    <option value="solution">Solutions</option>
+                    <option value="tutorial">Tutorials</option>
+                    <option value="reference">References</option>
+                    <option value="guide">Guides</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Filter by Difficulty:</label>
+                <select class="form-select" id="difficultyFilter">
+                    <option value="">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Search:</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search resources...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Navigation Section -->
+    <div class="mb-4">
+        <h3 class="h4 fw-bold mb-3">Browse by Category</h3>
+        <div class="row g-3">
+            <div class="col-md-2-4 col-sm-6">
+                <a href="{{ url_for('subject_level_category_resources', subject=subject, education_level=education_level, category='books') }}" class="text-decoration-none">
+                    <div class="category-card text-center p-3 border rounded-3 h-100 category-hover">
+                        <div class="category-icon books-icon mb-2">
+                            <i class="fas fa-book fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Books</h6>
+                        <small class="text-muted">Textbooks & References</small>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-2-4 col-sm-6">
+                <a href="{{ url_for('subject_level_category_resources', subject=subject, education_level=education_level, category='homework') }}" class="text-decoration-none">
+                    <div class="category-card text-center p-3 border rounded-3 h-100 category-hover">
+                        <div class="category-icon homework-icon mb-2">
+                            <i class="fas fa-pencil-alt fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Homework</h6>
+                        <small class="text-muted">Homework Paper & Help</small>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-2-4 col-sm-6">
+                <a href="{{ url_for('subject_level_category_resources', subject=subject, education_level=education_level, category='tests') }}" class="text-decoration-none">
+                    <div class="category-card text-center p-3 border rounded-3 h-100 category-hover">
+                        <div class="category-icon tests-icon mb-2">
+                            <i class="fas fa-file-alt fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Tests</h6>
+                        <small class="text-muted">Test & Past Papers</small>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-2-4 col-sm-6">
+                <a href="{{ url_for('subject_level_category_resources', subject=subject, education_level=education_level, category='notes') }}" class="text-decoration-none">
+                    <div class="category-card text-center p-3 border rounded-3 h-100 category-hover">
+                        <div class="category-icon notes-icon mb-2">
+                            <i class="fas fa-sticky-note fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Notes</h6>
+                        <small class="text-muted">Study Notes & Experiences</small>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-2-4 col-sm-6">
+                <a href="{{ url_for('subject_level_category_resources', subject=subject, education_level=education_level, category='questions') }}" class="text-decoration-none">
+                    <div class="category-card text-center p-3 border rounded-3 h-100 category-hover">
+                        <div class="category-icon questions-icon mb-2">
+                            <i class="fas fa-question-circle fa-2x"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Questions</h6>
+                        <small class="text-muted">Ask & Get Answers</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- All Resources Section -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h4 fw-bold mb-0">All {{ level_title }} {{ subject_title }} Resources</h3>
+        <small class="text-muted">{{ resources|length }} resource{% if resources|length != 1 %}s{% endif %} found</small>
+    </div>
+
+    <!-- Resources Grid -->
+    {% if resources %}
+    <div class="row" id="resourcesGrid">
+        {% for resource in resources %}
+        <div class="col-lg-4 col-md-6 mb-4 resource-item" 
+             data-type="{{ resource.resource_type }}" 
+             data-difficulty="{{ resource.difficulty_level }}"
+             data-title="{{ resource.title|lower }}"
+             data-description="{{ resource.description|lower }}">
+            <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                <div class="resource-card">
+                    {% if resource.cover_image %}
+                        <img src="{{ resource.cover_image | image_url }}" alt="{{ resource.title }}" class="resource-image">
+                    {% else %}
+                        <div class="resource-image-placeholder">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="resource-meta">
+                        <span class="badge bg-secondary">{{ resource.resource_type|title }}</span>
+                        {% if resource.difficulty_level == 'beginner' %}
+                            <span class="badge bg-success">Beginner</span>
+                        {% elif resource.difficulty_level == 'intermediate' %}
+                            <span class="badge bg-warning">Intermediate</span>
+                        {% elif resource.difficulty_level == 'advanced' %}
+                            <span class="badge bg-danger">Advanced</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="mb-2 text-dark">
+                        {{ resource.title }}
+                    </h5>
+                    
+                    <p class="text-muted mb-3">{{ resource.description[:120] }}{% if resource.description|length > 120 %}...{% endif %}</p>
+                    
+                    <div class="resource-stats">
+                        <div class="d-flex gap-3 mb-2">
+                            <div class="stat">
+                                <i class="fas fa-eye"></i>
+                                <span class="view-count">{{ resource.view_count }}</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-heart"></i>
+                                <span class="like-count">{{ resource.like_count or 0 }}</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-download"></i>
+                                <span class="download-count">{{ resource.download_count or 0 }}</span>
+                            </div>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fas fa-user-circle me-1"></i>{{ resource.author_name }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-resources">
+        <i class="fas fa-folder-open"></i>
+        <h4>No Resources Available</h4>
+        <p>There are currently no {{ level_title }} level {{ subject_title.lower() }} resources available. Check back later!</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Filter functionality
+function filterResources() {
+    const typeFilter = document.getElementById('typeFilter').value;
+    const difficultyFilter = document.getElementById('difficultyFilter').value;
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const resourceItems = document.querySelectorAll('.resource-item');
+    
+    resourceItems.forEach(item => {
+        const type = item.dataset.type;
+        const difficulty = item.dataset.difficulty;
+        const title = item.dataset.title;
+        const description = item.dataset.description;
+        
+        let showItem = true;
+        
+        // Type filter
+        if (typeFilter && type !== typeFilter) {
+            showItem = false;
+        }
+        
+        // Difficulty filter
+        if (difficultyFilter && difficulty !== difficultyFilter) {
+            showItem = false;
+        }
+        
+        // Search filter
+        if (searchInput && !title.includes(searchInput) && !description.includes(searchInput)) {
+            showItem = false;
+        }
+        
+        item.style.display = showItem ? 'block' : 'none';
+    });
+}
+
+// Bind event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('typeFilter').addEventListener('change', filterResources);
+    document.getElementById('difficultyFilter').addEventListener('change', filterResources);
+    document.getElementById('searchInput').addEventListener('input', filterResources);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,435 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics Dashboard - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stats-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-label {
+        font-size: 1.1rem;
+        color: var(--color-neutral);
+        font-weight: 500;
+    }
+    
+    .stats-icon {
+        font-size: 2.5rem;
+        color: var(--color-primary);
+        opacity: 0.8;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
+    
+    .chart-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+    }
+    
+    .table-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-neutral-dark);
+        margin-bottom: 1.5rem;
+    }
+    
+    .activity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        transition: background 0.3s ease;
+    }
+    
+    .activity-item:hover {
+        background: #f8fafc;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .activity-label {
+        font-weight: 500;
+        color: var(--color-neutral-dark);
+    }
+    
+    .activity-count {
+        font-weight: 600;
+        color: var(--color-primary);
+        font-size: 1.2rem;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        border-radius: 4px;
+        background: #e2e8f0;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+    
+    .user-role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .role-student {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+    
+    .role-moderator {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .role-admin {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .metric-item {
+        background: #f8fafc;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-primary);
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        color: var(--color-neutral);
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-chart-line me-3"></i>
+                    Statistics Dashboard
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Comprehensive platform analytics and insights</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Overview Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stats-number">{{ stats.totals.users }}</div>
+                <div class="stats-label">Total Users</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stats-number">{{ stats.totals.posts }}</div>
+                <div class="stats-label">Forum Posts</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-reply"></i>
+                </div>
+                <div class="stats-number">{{ stats.totals.comments }}</div>
+                <div class="stats-label">Comments</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stats-number">{{ stats.totals.views }}</div>
+                <div class="stats-label">Total Views</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="stats-number">{{ stats.totals.feedback }}</div>
+                <div class="stats-label">Feedback</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Activity -->
+        <div class="col-lg-6">
+            <div class="table-container">
+                <h3 class="table-title">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Forum Categories
+                </h3>
+                {% if stats.category_stats %}
+                    {% set max_count = stats.category_stats[0].count if stats.category_stats else 1 %}
+                    {% for category in stats.category_stats %}
+                    <div class="activity-item">
+                        <div class="activity-label">{{ category.category.title() }}</div>
+                        <div class="activity-count">{{ category.count }}</div>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" style="width: {{ (category.count / max_count * 100) }}%"></div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <h5 class="mt-3 text-muted">No Data Available</h5>
+                        <p class="text-muted">No forum posts found.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Top Active Users -->
+        <div class="col-lg-6">
+            <div class="table-container">
+                <h3 class="table-title">
+                    <i class="fas fa-trophy me-2"></i>
+                    Most Active Users
+                </h3>
+                {% if stats.top_users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Posts</th>
+                                    <th>Comments</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in stats.top_users %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.username }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="user-role-badge role-{{ user.user_role }}">
+                                            {{ user.user_role }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.post_count }}</td>
+                                    <td>{{ user.comment_count }}</td>
+                                    <td><strong>{{ user.total_activity }}</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <h5 class="mt-3 text-muted">No Active Users</h5>
+                        <p class="text-muted">No user activity found.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Charts -->
+    <div class="row g-4 mt-4">
+        <!-- User Registration Trend -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h3 class="chart-title">User Registrations (Last 30 Days)</h3>
+                {% if stats.user_registrations %}
+                    <div class="metric-grid">
+                        {% for reg in stats.user_registrations[:7] %}
+                        <div class="metric-item">
+                            <div class="metric-value">{{ reg.count }}</div>
+                            <div class="metric-label">{{ reg.date.strftime('%m-%d') }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-user-plus text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <h5 class="mt-3 text-muted">No Recent Registrations</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Forum Activity Trend -->
+        <div class="col-lg-6">
+            <div class="chart-container">
+                <h3 class="chart-title">Forum Posts (Last 30 Days)</h3>
+                {% if stats.forum_activity %}
+                    <div class="metric-grid">
+                        {% for activity in stats.forum_activity[:7] %}
+                        <div class="metric-item">
+                            <div class="metric-value">{{ activity.count }}</div>
+                            <div class="metric-label">{{ activity.date.strftime('%m-%d') }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-comments text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <h5 class="mt-3 text-muted">No Recent Activity</h5>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Types -->
+    {% if stats.activity_stats %}
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="table-container">
+                <h3 class="table-title">
+                    <i class="fas fa-activity me-2"></i>
+                    User Activity Types (Last 7 Days)
+                </h3>
+                <div class="row">
+                    {% for activity in stats.activity_stats %}
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="activity-item">
+                            <div class="activity-label">{{ activity.activity_type.replace('_', ' ').title() }}</div>
+                            <div class="activity-count">{{ activity.count }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Monthly Trends -->
+    {% if stats.monthly_stats %}
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="chart-container">
+                <h3 class="chart-title">Monthly Activity Trends (Last 12 Months)</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>New Users</th>
+                                <th>New Posts</th>
+                                <th>New Comments</th>
+                                <th>Total Activity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month in stats.monthly_stats %}
+                            <tr>
+                                <td><strong>{{ month.month }}</strong></td>
+                                <td>{{ month.new_users or 0 }}</td>
+                                <td>{{ month.new_posts or 0 }}</td>
+                                <td>{{ month.new_comments or 0 }}</td>
+                                <td><strong>{{ (month.new_users or 0) + (month.new_posts or 0) + (month.new_comments or 0) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

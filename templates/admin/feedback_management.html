@@ -1,0 +1,459 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback Management - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .feedback-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .feedback-card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+    }
+    
+    .feedback-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .feedback-body {
+        padding: 1.5rem;
+    }
+    
+    .feedback-actions {
+        padding: 1rem 1.5rem;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+    }
+    
+    .type-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .type-bug {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .type-suggestion {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+    
+    .type-complaint {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .type-other {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+    
+    .priority-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .priority-urgent {
+        background: #dc2626;
+        color: white;
+    }
+    
+    .priority-high {
+        background: #f59e0b;
+        color: white;
+    }
+    
+    .priority-medium {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .priority-low {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-open {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .status-in_progress {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .status-resolved {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .status-closed {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        margin-right: 1rem;
+    }
+    
+    .admin-response {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .response-form {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .btn-respond {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-respond:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-status {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        margin: 0.125rem;
+    }
+    
+    .btn-status:hover {
+        background: #059669;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-comment-dots me-3"></i>
+                    Feedback Management
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Manage user feedback, bug reports, and suggestions</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number">{{ stats.total or 0 }}</div>
+                <div class="text-muted">Total Feedback</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number text-danger">{{ stats.open_count or 0 }}</div>
+                <div class="text-muted">Open</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number text-warning">{{ stats.in_progress_count or 0 }}</div>
+                <div class="text-muted">In Progress</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number text-success">{{ stats.resolved_count or 0 }}</div>
+                <div class="text-muted">Resolved</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number text-danger">{{ stats.bug_count or 0 }}</div>
+                <div class="text-muted">Bug Reports</div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <div class="stats-card">
+                <div class="stats-number text-primary">{{ stats.suggestion_count or 0 }}</div>
+                <div class="text-muted">Suggestions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback List -->
+    {% if feedback_list %}
+        {% for feedback in feedback_list %}
+        <div class="feedback-card">
+            <div class="feedback-header">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex gap-2">
+                        <span class="type-badge type-{{ feedback.feedback_type }}">{{ feedback.feedback_type }}</span>
+                        <span class="priority-badge priority-{{ feedback.priority }}">{{ feedback.priority }}</span>
+                        <span class="status-badge status-{{ feedback.status }}" id="status-{{ feedback.id }}">{{ feedback.status.replace('_', ' ') }}</span>
+                    </div>
+                    <small class="text-muted">{{ feedback.created_at | datetime_full }}</small>
+                </div>
+                
+                <h5 class="mb-3">{{ feedback.title }}</h5>
+                
+                <div class="user-info">
+                    <div class="user-avatar">{{ feedback.user_name[0].upper() }}</div>
+                    <div>
+                        <strong>{{ feedback.user_name }}</strong>
+                        <div class="text-muted small">{{ feedback.user_email }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feedback-body">
+                <p>{{ feedback.description }}</p>
+                
+                {% if feedback.admin_response %}
+                <div class="admin-response">
+                    <h6><i class="fas fa-reply me-2"></i>Admin Response</h6>
+                    <p class="mb-2">{{ feedback.admin_response }}</p>
+                    <small class="text-muted">
+                        Responded by {{ feedback.admin_name or 'Administrator' }} 
+                        on {{ feedback.responded_at | datetime_full if feedback.responded_at else 'N/A' }}
+                    </small>
+                </div>
+                {% endif %}
+                
+                {% if feedback.status in ['open', 'in_progress'] %}
+                <div class="response-form" id="response-form-{{ feedback.id }}" style="display: none;">
+                    <h6>Add Response</h6>
+                    <textarea class="form-control mb-3" id="response-{{ feedback.id }}" rows="3" placeholder="Enter your response..."></textarea>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="new-status-{{ feedback.id }}" style="width: auto;">
+                            <option value="in_progress" {{ 'selected' if feedback.status == 'in_progress' else '' }}>In Progress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        <button class="btn btn-respond" onclick="submitResponse({{ feedback.id }})">
+                            <i class="fas fa-paper-plane me-1"></i>Send Response
+                        </button>
+                        <button class="btn btn-secondary" onclick="hideResponseForm({{ feedback.id }})">Cancel</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="feedback-actions">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if feedback.status in ['open', 'in_progress'] %}
+                        <button class="btn btn-respond btn-sm" onclick="showResponseForm({{ feedback.id }})">
+                            <i class="fas fa-reply me-1"></i>Respond
+                        </button>
+                        {% endif %}
+                        
+                        {% if feedback.status != 'closed' %}
+                        <button class="btn-status btn-sm" onclick="changeStatus({{ feedback.id }}, 'closed')">
+                            <i class="fas fa-times me-1"></i>Close
+                        </button>
+                        {% endif %}
+                        
+                        {% if feedback.status == 'open' %}
+                        <button class="btn-status btn-sm" onclick="changeStatus({{ feedback.id }}, 'in_progress')">
+                            <i class="fas fa-play me-1"></i>Start Progress
+                        </button>
+                        {% endif %}
+                        
+                        {% if feedback.status == 'in_progress' %}
+                        <button class="btn-status btn-sm" onclick="changeStatus({{ feedback.id }}, 'resolved')">
+                            <i class="fas fa-check me-1"></i>Mark Resolved
+                        </button>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <small class="text-muted">
+                            ID: #{{ feedback.id }}
+                            {% if feedback.updated_at != feedback.created_at %}
+                            | Updated: {{ feedback.updated_at.strftime('%m-%d %H:%M') }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-comment-dots text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+            <h4 class="mt-3 text-muted">No Feedback Yet</h4>
+            <p class="text-muted">No user feedback has been submitted.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function showResponseForm(feedbackId) {
+    document.getElementById(`response-form-${feedbackId}`).style.display = 'block';
+}
+
+function hideResponseForm(feedbackId) {
+    document.getElementById(`response-form-${feedbackId}`).style.display = 'none';
+    document.getElementById(`response-${feedbackId}`).value = '';
+}
+
+function submitResponse(feedbackId) {
+    const response = document.getElementById(`response-${feedbackId}`).value.trim();
+    const status = document.getElementById(`new-status-${feedbackId}`).value;
+    
+    if (!response) {
+        alert('Please enter a response');
+        return;
+    }
+    
+    fetch(`/admin/feedback/${feedbackId}/respond`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            response: response,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to submit response'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the response');
+    });
+}
+
+function changeStatus(feedbackId, newStatus) {
+    if (!confirm(`Are you sure you want to change the status to ${newStatus}?`)) {
+        return;
+    }
+    
+    fetch(`/admin/feedback/${feedbackId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the status badge
+            const statusBadge = document.getElementById(`status-${feedbackId}`);
+            statusBadge.className = `status-badge status-${newStatus}`;
+            statusBadge.textContent = newStatus.replace('_', ' ');
+            
+            alert(data.message);
+            location.reload(); // Reload to update action buttons
+        } else {
+            alert('Error: ' + (data.error || 'Failed to change status'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while changing the status');
+    });
+}
+</script>
+{% endblock %}

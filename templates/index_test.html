@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TEST PAGE - Flask Template Working</title>
+</head>
+<body>
+    <h1 style="background: red; color: white; padding: 20px; text-align: center;">
+        SUCCESS! Flask is using index_test.html
+    </h1>
+    
+    <div style="background: green; color: white; padding: 20px; margin: 20px; text-align: center;">
+        <h2>JavaScript Test</h2>
+        <p>If you see an alert, JavaScript is working in Flask templates:</p>
+    </div>
+    
+    <script>
+        alert('SUCCESS! JavaScript works in Flask templates!');
+        console.log('JavaScript executed successfully in Flask template');
+        
+        // Add visible confirmation
+        document.body.innerHTML += '<div style="background: blue; color: white; padding: 20px; margin: 20px; text-align: center; font-size: 18px;">JavaScript DOM manipulation works!</div>';
+    </script>
+    
+    <button onclick="alert('Button click works!')" style="padding: 15px; font-size: 16px; margin: 20px;">
+        Click me to test JavaScript events
+    </button>
+</body>
+</html>

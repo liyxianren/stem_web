@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - STEM Academic Resource Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="row w-100">
+        <div class="col-md-6 col-lg-4 mx-auto">
+            <div class="card shadow-warm-lg border-0">
+                <div class="card-body p-5">
+                    <!-- Admin Login Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--color-primary);"></i>
+                        </div>
+                        <h2 class="card-title mb-2">Admin Login</h2>
+                        <p class="text-muted">STEM Academic Resource Platform Administration</p>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form method="POST" action="{{ url_for('admin_login') }}">
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-user text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="username" name="username" 
+                                       placeholder="Enter admin username" required autocomplete="username">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-semibold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-lock text-muted"></i>
+                                </span>
+                                <input type="password" class="form-control border-start-0" id="password" name="password" 
+                                       placeholder="Enter admin password" required autocomplete="current-password">
+                                <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Login to Admin Panel
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Back to Home -->
+                    <div class="text-center">
+                        <a href="{{ url_for('index') }}" class="text-decoration-none text-muted">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Authorized administrators only
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Background Elements -->
+<div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: -1; overflow: hidden;">
+    <div class="position-absolute animate-blob" 
+         style="top: 10%; left: 10%; width: 200px; height: 200px; background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary)); border-radius: 50%; opacity: 0.1;"></div>
+    <div class="position-absolute animate-blob animation-delay-2000" 
+         style="top: 60%; right: 10%; width: 150px; height: 150px; background: linear-gradient(135deg, var(--color-secondary), var(--color-primary)); border-radius: 50%; opacity: 0.1;"></div>
+    <div class="position-absolute animate-blob animation-delay-4000" 
+         style="bottom: 10%; left: 50%; width: 100px; height: 100px; background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); border-radius: 50%; opacity: 0.1;"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+    }
+    
+    // Focus on username field
+    const usernameInput = document.getElementById('username');
+    if (usernameInput) {
+        usernameInput.focus();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Login - STEM Academic Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-section {
+        background: linear-gradient(135deg, var(--color-neutral-light) 0%, #fff 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* 背景装饰球体 */
+    .login-section .blob {
+        position: absolute;
+        border-radius: 50%;
+        mix-blend-mode: multiply;
+        filter: blur(3rem);
+        opacity: 0.2;
+        pointer-events: none;
+    }
+    
+    .login-section .blob-1 {
+        top: 10%;
+        right: 10%;
+        width: 15rem;
+        height: 15rem;
+        background-color: #fbbf24;
+        animation: blob 8s infinite;
+    }
+    
+    .login-section .blob-2 {
+        bottom: 20%;
+        left: 10%;
+        width: 12rem;
+        height: 12rem;
+        background-color: #f59e0b;
+        animation: blob 8s infinite 2s;
+    }
+    
+    @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(20px, -30px) scale(1.1); }
+        66% { transform: translate(-15px, 15px) scale(0.9); }
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(217, 119, 6, 0.1);
+        border-radius: 2rem;
+        box-shadow: 0 20px 60px rgba(217, 119, 6, 0.1);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: white;
+        padding: 2.5rem 2rem 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+    }
+    
+    .form-floating {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid rgba(217, 119, 6, 0.1);
+        border-radius: 1rem;
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.25);
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .form-floating label {
+        color: var(--color-neutral-dark);
+        font-weight: 500;
+    }
+    
+    .welcome-text {
+        font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+        font-size: 1.75rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-subtitle {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+    
+    .brand-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="login-section d-flex align-items-center">
+    <!-- 背景装饰球体 -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fa-solid fa-flask brand-icon"></i>
+                        <h1 class="welcome-text">Welcome Back</h1>
+                        <p class="welcome-subtitle mb-0">Access STEM Academic Resources</p>
+                    </div>
+                    
+                    <div class="p-4 p-md-5">
+                        <form method="POST" action="{{ url_for('login') }}">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       required placeholder="Name or Email">
+                                <label for="username">
+                                    <i class="fa-solid fa-user me-2"></i>Name or Email
+                                </label>
+                            </div>
+                            
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       required placeholder="Password">
+                                <label for="password">
+                                    <i class="fa-solid fa-lock me-2"></i>Password
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+                                    <label class="form-check-label text-muted" for="remember_me">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="{{ url_for('reset_password') }}" class="text-muted text-decoration-none small">
+                                    Forgot password?
+                                </a>
+                            </div>
+                            
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-sign-in-alt me-2"></i>Login
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="text-center pt-3" style="border-top: 1px solid rgba(217, 119, 6, 0.1);">
+                            <p class="text-muted mb-0">
+                                Don't have an account?
+                                <a href="{{ url_for('register') }}" class="fw-bold text-decoration-none" style="color: var(--color-primary);">
+                                    <i class="fa-solid fa-user-plus me-1"></i>Register Now
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 提示信息 -->
+                <div class="text-center mt-4">
+                    <div class="bg-white rounded-3 p-3 shadow-sm" style="border: 1px solid rgba(217, 119, 6, 0.1);">
+                        <p class="text-muted small mb-0">
+                            <i class="fa-solid fa-info-circle me-2" style="color: var(--color-primary);"></i>
+                            Welcome to STEM Academic Resource Platform - Share and access quality educational resources
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 表单验证和用户体验增强
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        // 自动聚焦到用户名输入框
+        setTimeout(() => {
+            usernameInput.focus();
+        }, 500);
+        
+        // 输入框动画效果
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+            
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+        
+        // 表单提交验证
+        form.addEventListener('submit', function(e) {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!username || !password) {
+                e.preventDefault();
+                
+                // 添加视觉反馈
+                if (!username) {
+                    usernameInput.classList.add('is-invalid');
+                    usernameInput.style.borderColor = '#dc3545';
+                }
+                if (!password) {
+                    passwordInput.classList.add('is-invalid');
+                    passwordInput.style.borderColor = '#dc3545';
+                }
+                
+                // 显示错误消息
+                showMessage('请填写所有必填字段', 'error');
+            } else {
+                // 添加加载状态
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>登录中...';
+                submitBtn.disabled = true;
+                
+                // 如果登录失败，恢复按钮状态
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
+        });
+        
+        // 检查用户是否尝试访问需要登录的功能
+        function checkLoginRequired() {
+            // 检查URL参数或session storage中是否有需要登录的提示
+            const urlParams = new URLSearchParams(window.location.search);
+            const loginRequired = urlParams.get('login_required');
+            const redirectFrom = urlParams.get('from');
+            
+            if (loginRequired === 'true') {
+                let message = 'Please log in to access this feature.';
+                if (redirectFrom) {
+                    message = `Please log in to access ${redirectFrom.replace('_', ' ')}.`;
+                }
+                showMessage(message, 'warning');
+            }
+        }
+        
+        // 消息显示函数
+        function showMessage(message, type = 'info') {
+            const alertClass = type === 'error' ? 'alert-danger' : (type === 'warning' ? 'alert-warning' : 'alert-info');
+            const icon = type === 'error' ? 'fa-exclamation-triangle' : (type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle');
+            
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="border-radius: 1rem; border: none;">
+                    <i class="fa-solid ${icon} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // 移除旧的警告
+            const existingAlert = form.querySelector('.alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            form.insertAdjacentHTML('afterbegin', alertHtml);
+            
+            // 自动隐藏
+            setTimeout(() => {
+                const alert = form.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 4000);
+        }
+        
+        // 页面加载时检查是否需要显示登录提示
+        checkLoginRequired();
+    });
+</script>
+{% endblock %}

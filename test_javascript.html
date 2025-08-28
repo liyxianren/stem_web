@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Test - Direct HTML</title>
+</head>
+<body>
+    <h1>JavaScript Test Page (Direct HTML)</h1>
+    <p>If JavaScript works, you should see an alert and green text.</p>
+    
+    <div id="test-div">Testing...</div>
+    
+    <script>
+        // Multiple ways to test JavaScript
+        alert('🚨 JavaScript is working! This is a direct HTML test.');
+        console.log('🚨 JavaScript console log working!');
+        
+        // DOM manipulation test
+        document.getElementById('test-div').innerHTML = '<span style="color: green; font-weight: bold;">✅ JavaScript DOM manipulation works!</span>';
+        
+        // Add more content
+        document.body.innerHTML += '<p style="color: blue; font-size: 18px;">✅ JavaScript document.write equivalent works!</p>';
+        
+        // Function test
+        function testFunction() {
+            alert('🚨 JavaScript function execution works!');
+        }
+        
+        // Auto-run function after 1 second
+        setTimeout(testFunction, 1000);
+        
+        // Add a button dynamically
+        document.body.innerHTML += '<button onclick="alert(\'Button click JavaScript works!\');" style="padding: 10px; font-size: 16px; margin-top: 20px;">Click me to test JavaScript events</button>';
+    </script>
+    
+</body>
+</html>

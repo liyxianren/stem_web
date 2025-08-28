@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="STEM Academic Resources Platform - Access quality educational materials for IGCSE, A-Level, and university preparation">
+    <meta name="keywords" content="STEM, academic resources, education, IGCSE, A-Level, physics, mathematics, chemistry, biology">
+    <meta name="author" content="STEM Academic Resources Platform">
+    
+    <title>Science Academic Club - Empowering STEM Education</title>
+    
+    
+    <!-- Bootstrap CSS - Local -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome - Local -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* STEM Academic Platform - Professional blue theme */
+            --color-primary: #3b82f6; /* Professional blue for academic feel */
+            --color-primary-light: #60a5fa;
+            --color-primary-dark: #1e3a8a;
+            --color-secondary: #0d9488;
+            --color-neutral-light: #f8fafc;
+            --color-neutral: #64748b;
+            --color-neutral-dark: #1e293b;
+            
+            /* Academic color palette */
+            --warm-primary: #3b82f6;
+            --warm-primary-dark: #1e3a8a;
+            --warm-primary-light: #60a5fa;
+            --warm-secondary: #0d9488;
+            --warm-neutral: #f8fafc;
+            --warm-background: #ffffff;
+            --warm-success: #059669;
+            --warm-info: #0ea5e9;
+            --warm-warning: #d97706;
+            --warm-white: #FFFFFF;
+            
+            /* Typography System */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--warm-background) 0%, #f8fafc 100%);
+            min-height: 100vh;
+            font-family: var(--font-sans);
+            color: var(--color-neutral-dark);
+            line-height: 1.6;
+            padding-top: 80px; /* Add padding to prevent navbar overlap */
+        }
+        
+        /* Professional navigation bar */
+        .navbar {
+            background: rgba(248, 250, 252, 0.95) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(59, 130, 246, 0.1);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Dropdown menu styles */
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+            padding: 0.75rem 0;
+            min-width: 220px;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
+            color: var(--color-neutral-dark);
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            margin: 0 0.5rem;
+        }
+        
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            transform: translateX(2px);
+        }
+        
+        .dropdown-divider {
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+            margin: 0.5rem 0;
+        }
+        
+        /* Multi-level dropdown */
+        .dropdown-submenu {
+            position: relative;
+        }
+        
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -6px;
+            margin-left: -1px;
+        }
+        
+        .dropdown-submenu:hover > .dropdown-menu {
+            display: block;
+        }
+        
+        @media (max-width: 767.98px) {
+            .dropdown-submenu .dropdown-menu {
+                position: static;
+                float: none;
+                width: auto;
+                margin-top: 0;
+                background: rgba(248, 250, 252, 0.5);
+                border: none;
+                box-shadow: inset 0 2px 4px rgba(59, 130, 246, 0.1);
+            }
+        }
+        
+        .navbar-brand {
+            color: #92400e !important;
+            font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            color: #d97706 !important;
+        }
+        
+        /* 现代化卡片设计 */
+        .card {
+            background: var(--warm-white);
+            border: 1px solid var(--warm-primary-light);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(141, 110, 99, 0.12);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 15px 50px rgba(141, 110, 99, 0.18);
+            transform: translateY(-3px);
+        }
+        
+        /* 现代化按钮设计 */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            border: none;
+            color: #fff;
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 12px 24px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--color-primary-dark) 0%, #7c2d12 100%);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.3);
+        }
+        
+        .btn-outline-primary {
+            background-color: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 10px 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            border-color: var(--color-primary);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.3);
+        }
+        
+        /* 现代化表单控件 */
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #fde68a;
+            padding: 14px 18px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-control:focus {
+            border-color: var(--warm-primary);
+            box-shadow: 0 0 0 0.2rem rgba(217, 119, 6, 0.25);
+            background: #fff;
+        }
+        
+        /* 现代化警告框 */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, var(--warm-success) 0%, #15803d 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, var(--warm-info) 0%, #0284c7 100%);
+            color: white;
+        }
+        
+        /* Page Headers - White and Bold */
+        h1.h2 {
+            color: white !important;
+            font-weight: 700 !important;
+        }
+        
+        /* Modern navigation links */
+        .nav-link {
+            color: var(--color-neutral) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            margin: 0 4px;
+        }
+        
+        .nav-link:hover {
+            color: var(--color-primary) !important;
+            background: rgba(59, 130, 246, 0.08);
+            border-bottom-color: var(--color-primary-light);
+        }
+        
+        .nav-link.active {
+            color: var(--color-primary-dark) !important;
+            background: rgba(59, 130, 246, 0.12);
+            border-bottom-color: var(--color-primary);
+        }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5em;
+            vertical-align: 0.125em;
+            color: var(--color-primary);
+        }
+        
+        /* 标题样式 */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--warm-primary-dark);
+            font-family: 'Georgia', serif;
+        }
+        
+        /* 特定的h1.h2标题样式 - 白色加粗 */
+        h1.h2 {
+            color: white !important;
+            font-weight: bold !important;
+            font-family: 'Georgia', serif;
+        }
+        
+        /* 工具类 */
+        .text-primary {
+            color: var(--warm-primary) !important;
+        }
+        
+        .bg-primary {
+            background: linear-gradient(135deg, var(--warm-primary) 0%, var(--warm-primary-dark) 100%) !important;
+        }
+        
+        .border-primary {
+            border-color: var(--warm-primary) !important;
+        }
+        
+        /* 现代化动画 */
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+        
+        /* 全局增强样式 */
+        .img-fluid {
+            transition: transform 0.3s ease;
+        }
+        
+        .img-fluid:hover {
+            transform: scale(1.02);
+        }
+        
+        /* 文本截断工具类 */
+        .text-truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .text-truncate-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* 阴影工具类 */
+        .shadow-warm {
+            box-shadow: 0 10px 40px rgba(141, 110, 99, 0.12) !important;
+        }
+        
+        .shadow-warm-lg {
+            box-shadow: 0 15px 50px rgba(141, 110, 99, 0.18) !important;
+        }
+        
+        /* 渐变背景工具类 */
+        .bg-gradient-warm {
+            background: linear-gradient(135deg, var(--warm-background) 0%, #FFF3E0 100%) !important;
+        }
+        
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+        }
+
+        /* Three-Tier Mega Dropdown Styles */
+        .mega-dropdown {
+            position: relative;
+        }
+        
+        .mega-dropdown-menu,
+        .level-dropdown-menu,
+        .category-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .mega-dropdown-menu {
+            min-width: 250px;
+            width: 250px;
+        }
+        
+        .level-dropdown-menu {
+            min-width: 200px;
+            width: 200px;
+        }
+        
+        .category-dropdown-menu {
+            min-width: 280px;
+            width: 280px;
+        }
+        
+        .mega-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .level-dropdown-menu {
+            left: calc(100% + 12px); /* 完全在父菜单右侧，增加间距 */
+            top: 0;
+        }
+        
+        .level-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) translateX(0);
+        }
+        
+        .category-dropdown-menu {
+            left: calc(100% + 12px); /* 完全在父菜单右侧，增加间距 */
+            top: 0;
+        }
+        
+        .category-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) translateX(0);
+        }
+        
+        /* Menu positioning and animation improvements */
+        .level-dropdown-menu,
+        .category-dropdown-menu {
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .mega-dropdown-menu.show .mega-dropdown-content,
+        .level-dropdown-menu.show .level-dropdown-content,
+        .category-dropdown-menu.show .category-dropdown-content {
+            animation: slideInFromTop 0.3s ease-out;
+        }
+        
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Hover effects with enhanced visual feedback */
+        .subject-item:hover,
+        .level-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left: 3px solid var(--color-primary);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Active states with enhanced styling */
+        .subject-item.active,
+        .level-item.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+            border-left: 4px solid var(--color-primary);
+            box-shadow: 
+                inset 0 0 0 1px rgba(59, 130, 246, 0.3),
+                0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+        
+        /* Enhanced category hover effects */
+        .category-item:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.12),
+                0 4px 10px rgba(0, 0, 0, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Menu backdrop for better visual separation */
+        .mega-dropdown::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            pointer-events: none;
+        }
+        
+        .mega-dropdown.menu-open::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mega-dropdown-content,
+        .level-dropdown-content,
+        .category-dropdown-content {
+            padding: 1rem;
+        }
+        
+        /* Subject Items */
+        .subjects-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .subject-item,
+        .level-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .subject-item:hover,
+        .level-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .subject-item.active,
+        .level-item.active {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 3px solid var(--color-primary);
+        }
+        
+        .subject-icon,
+        .level-icon {
+            font-size: 1.1rem;
+            width: 24px;
+            color: var(--color-primary);
+            margin-right: 0.75rem;
+        }
+        
+        .subject-name,
+        .level-name {
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .subject-arrow,
+        .level-arrow {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+        }
+        
+        .subject-item:hover .subject-arrow,
+        .level-item:hover .level-arrow {
+            color: var(--color-primary);
+            transform: translateX(4px);
+        }
+        
+        /* Category Items */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .category-item {
+            display: flex;
+            align-items: flex-start; /* 改为flex-start确保顶部对齐 */
+            padding: 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            gap: 0.75rem; /* 增加图标和文字之间的间距 */
+        }
+        
+        .category-item:hover {
+            text-decoration: none;
+            color: inherit;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--color-primary);
+        }
+        
+        .category-icon {
+            font-size: 1.3rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0; /* 防止图标被压缩 */
+        }
+        
+        .category-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+        
+        .category-desc {
+            color: #6b7280;
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        
+        /* Category Colors */
+        .books-color {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+        }
+        
+        .homework-color {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            color: white;
+        }
+        
+        .tests-color {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+        
+        .notes-color {
+            background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+            color: white;
+        }
+        
+        .questions-color {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 991.98px) {
+            .mega-dropdown-menu,
+            .level-dropdown-menu,
+            .category-dropdown-menu {
+                position: fixed;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%);
+                width: 90vw;
+                max-width: 400px;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            .level-dropdown-menu,
+            .category-dropdown-menu {
+                margin-left: 0;
+            }
+        }
+        
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .btn-primary, .btn-outline-primary {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .display-4 {
+                font-size: 2rem !important;
+            }
+            
+            .fs-5 {
+                font-size: 1rem !important;
+            }
+        }
+    </style>
+    
+    
+<style>
+    /* STEM Academic Platform - Professional Academic Style */
+    :root {
+        /* Academic Color System */
+        --primary-blue: #1e3a8a; /* Professional blue for headers */
+        --secondary-blue: #3b82f6; /* Interactive blue */
+        --accent-teal: #0d9488; /* Science accent color */
+        --neutral-gray: #64748b; /* Professional gray */
+        --light-gray: #f8fafc; /* Background gray */
+        --success-green: #059669; /* Success/approved color */
+        --warning-amber: #d97706; /* Warning/pending color */
+        
+        /* Typography */
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+        
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    
+    body {
+        font-family: var(--font-sans);
+        background: linear-gradient(135deg, var(--light-gray) 0%, #ffffff 100%);
+        color: #1e293b;
+        line-height: 1.6;
+    }
+    
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
+        opacity: 0.3;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* 5-column layout support */
+    .col-xl-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+    
+    @media (max-width: 1199.98px) {
+        .col-xl-2-4 {
+            width: 50%;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .col-xl-2-4 {
+            width: 100%;
+        }
+    }
+    
+    /* Category Cards */
+    .category-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--secondary-blue);
+    }
+    
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+    }
+    
+    .books-icon { background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); }
+    .homework-icon { background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); }
+    .experience-icon { background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%); }
+    .tests-icon { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+    .notes-icon { background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%); }
+    .questions-icon { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    
+    /* Resource Card */
+    .resource-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .resource-header {
+        padding: 1.5rem 1.5rem 1rem;
+        flex-grow: 1;
+    }
+    
+    .resource-meta {
+        padding: 0 1.5rem 1.5rem;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+    }
+    
+    .subject-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .badge-math { background: #ede9fe; color: #7c3aed; }
+    .badge-physics { background: #fee2e2; color: #dc2626; }
+    .badge-chemistry { background: #dcfce7; color: #16a34a; }
+    .badge-biology { background: #fef3c7; color: #d97706; }
+    
+    /* Forum Post Card */
+    .forum-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--secondary-blue);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .forum-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateX(2px);
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--secondary-blue);
+        color: var(--secondary-blue);
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-outline:hover {
+        background: var(--secondary-blue);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    /* Stats Section */
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: var(--neutral-gray);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 0;
+        }
+        
+        .subject-card {
+            padding: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+</head>
+<body>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+                <i class="fas fa-graduation-cap me-2" style="color: var(--color-primary); font-size: 1.5rem;"></i>
+                <span>STEM Academic</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="box-shadow: none;">
+                <i class="fa-solid fa-bars" style="color: var(--color-primary); font-size: 1.2rem;"></i>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fas fa-home me-1"></i>
+                            Home
+                        </a>
+                    </li>
+                    
+                    <!-- Resources - Three Level Navigation -->
+                    <li class="nav-item dropdown mega-dropdown" id="resourcesMenu">
+                        <a class="nav-link dropdown-toggle " href="javascript:void(0)" id="resourcesDropdown" role="button">
+                            <i class="fas fa-folder-open me-1"></i>
+                            Resources
+                        </a>
+                        
+                        <!-- Level 1: Subjects Menu -->
+                        <div class="mega-dropdown-menu" id="subjectsMenu">
+                            <div class="mega-dropdown-content">
+                                <div class="subjects-grid">
+                                    <div class="subject-item" data-subject="math">
+                                        <i class="fas fa-calculator subject-icon"></i>
+                                        <span class="subject-name">Mathematics</span>
+                                        <i class="fas fa-chevron-right subject-arrow"></i>
+                                    </div>
+                                    <div class="subject-item" data-subject="physics">
+                                        <i class="fas fa-atom subject-icon"></i>
+                                        <span class="subject-name">Physics</span>
+                                        <i class="fas fa-chevron-right subject-arrow"></i>
+                                    </div>
+                                    <div class="subject-item" data-subject="chemistry">
+                                        <i class="fas fa-flask subject-icon"></i>
+                                        <span class="subject-name">Chemistry</span>
+                                        <i class="fas fa-chevron-right subject-arrow"></i>
+                                    </div>
+                                    <div class="subject-item" data-subject="biology">
+                                        <i class="fas fa-dna subject-icon"></i>
+                                        <span class="subject-name">Biology</span>
+                                        <i class="fas fa-chevron-right subject-arrow"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level 2: Education Levels Menu -->
+                        <div class="level-dropdown-menu" id="levelsMenu">
+                            <div class="level-dropdown-content">
+                                <div class="levels-grid">
+                                    <div class="level-item" data-level="igcse">
+                                        <i class="fas fa-graduation-cap level-icon"></i>
+                                        <span class="level-name">IGCSE</span>
+                                        <i class="fas fa-chevron-right level-arrow"></i>
+                                    </div>
+                                    <div class="level-item" data-level="alevel">
+                                        <i class="fas fa-user-graduate level-icon"></i>
+                                        <span class="level-name">A-Level</span>
+                                        <i class="fas fa-chevron-right level-arrow"></i>
+                                    </div>
+                                    <div class="level-item" data-level="ap">
+                                        <i class="fas fa-trophy level-icon"></i>
+                                        <span class="level-name">AP</span>
+                                        <i class="fas fa-chevron-right level-arrow"></i>
+                                    </div>
+                                    <div class="level-item" data-level="competition">
+                                        <i class="fas fa-medal level-icon"></i>
+                                        <span class="level-name">Competition</span>
+                                        <i class="fas fa-chevron-right level-arrow"></i>
+                                    </div>
+                                    <div class="level-item" data-level="university">
+                                        <i class="fas fa-university level-icon"></i>
+                                        <span class="level-name">University</span>
+                                        <i class="fas fa-chevron-right level-arrow"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level 3: Categories Menu -->
+                        <div class="category-dropdown-menu" id="categoriesMenu">
+                            <div class="category-dropdown-content">
+                                <div class="categories-grid">
+                                    <a href="javascript:void(0)" class="category-item" data-category="books">
+                                        <i class="fas fa-book category-icon books-color"></i>
+                                        <div class="category-content">
+                                            <span class="category-name">Books</span>
+                                            <small class="category-desc">Textbooks & References</small>
+                                        </div>
+                                    </a>
+                                    <a href="javascript:void(0)" class="category-item" data-category="homework">
+                                        <i class="fas fa-pencil-alt category-icon homework-color"></i>
+                                        <div class="category-content">
+                                            <span class="category-name">Homework</span>
+                                            <small class="category-desc">Homework Papers</small>
+                                        </div>
+                                    </a>
+                                    <a href="javascript:void(0)" class="category-item" data-category="tests">
+                                        <i class="fas fa-file-alt category-icon tests-color"></i>
+                                        <div class="category-content">
+                                            <span class="category-name">Tests</span>
+                                            <small class="category-desc">Test & Past Papers</small>
+                                        </div>
+                                    </a>
+                                    <a href="javascript:void(0)" class="category-item" data-category="notes">
+                                        <i class="fas fa-sticky-note category-icon notes-color"></i>
+                                        <div class="category-content">
+                                            <span class="category-name">Notes</span>
+                                            <small class="category-desc">Study Notes</small>
+                                        </div>
+                                    </a>
+                                    <a href="javascript:void(0)" class="category-item" data-category="questions">
+                                        <i class="fas fa-question-circle category-icon questions-color"></i>
+                                        <div class="category-content">
+                                            <span class="category-name">Questions</span>
+                                            <small class="category-desc">Q&A Community</small>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link " href="/forum">
+                            <i class="fas fa-question-circle me-1"></i>
+                            Questions
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">
+                                Login
+                            </a>
+                        </li>
+                        <li class="nav-item ms-3">
+                            <a class="btn btn-primary btn-sm" href="/register">
+                                <i class="fa-solid fa-user-plus me-2"></i>
+                                Register
+                            </a>
+                        </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    
+        
+    
+
+    <!-- Main Content -->
+    <main>
+        
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4" style="color: white;">
+                    Science Academic Club
+                </h1>
+                <p class="fs-5 mb-4" style="opacity: 0.9;">
+                    Access high-quality academic resources, collaborate with peers, and excel in Mathematics, Physics, Chemistry, and Biology.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    
+                        <a href="/register" class="btn btn-light btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Join Community
+                        </a>
+                        <a href="/login" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Sign In
+                        </a>
+                    
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="row g-3 mt-4">
+                    <div class="col-6">
+                        <div class="stats-card">
+                            <div class="stat-number">1+</div>
+                            <div class="stat-label">Resources</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stats-card">
+                            <div class="stat-number">109+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Post Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Explore by Category</h2>
+            <p class="fs-5 text-muted mx-auto" style="max-width: 600px;">
+                Find resources across all major categories
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=books" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon books-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Books</h4>
+                        <p class="text-muted small">Textbooks, Reference Materials, Study Guides</p>
+                        <small class="text-primary fw-semibold">Browse Books</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=homework" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon homework-icon">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Homework</h4>
+                        <p class="text-muted small">Homework Paper, Homework help</p>
+                        <small class="text-danger fw-semibold">Browse Notes</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=tests" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon tests-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Tests</h4>
+                        <p class="text-muted small">Test paper, Past paper</p>
+                        <small class="text-success fw-semibold">Browse Tests</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=notes" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon notes-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Notes</h4>
+                        <p class="text-muted small">Study Notes, learning experiences</p>
+                        <small class="text-success fw-semibold">Browse Notes</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=questions" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon questions-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Questions</h4>
+                        <p class="text-muted small">Ask Questions, Get Answers, Community Help</p>
+                        <small class="text-info fw-semibold">Browse Questions</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Resources -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Featured Resources</h2>
+            <p class="fs-5 text-muted">Recently uploaded and highly rated materials</p>
+        </div>
+        
+        <div class="row g-4">
+            
+            <div class="col-md-6 col-lg-4">
+                <a href="/view_resource/19" class="text-decoration-none">
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                
+                                    <span class="subject-badge badge-math">IGCSE</span>
+                                
+                                <small class="text-muted">08/21</small>
+                            </div>
+                            <h5 class="fw-bold mb-2">test resources</h5>
+                            <p class="text-muted small mb-3">test math</p>
+                        </div>
+                        <div class="resource-meta">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-circle text-muted me-2"></i>
+                                    <small class="text-muted">By admin</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-eye text-muted me-1"></i>
+                                    <small class="text-muted">34</small>
+                                    <i class="fas fa-heart text-muted ms-2 me-1"></i>
+                                    <small class="text-muted">0</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            
+            
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="/subjects" class="btn-primary">
+                <i class="fas fa-arrow-right me-2"></i>
+                View All Resources
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Forum Activity -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Recent Questions</h2>
+            <p class="fs-5 text-muted">Ask questions and get help from the community</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-8">
+                
+                <div class="forum-card mb-4">
+                    <a href="/forum/post/59" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    
+                                        <span class="subject-badge badge-math me-2">Questions</span>
+                                    
+                                    test
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">admin</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">08/21 20:02</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">5 views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>0 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="forum-card mb-4">
+                    <a href="/forum/post/57" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    
+                                        <span class="subject-badge badge-math me-2">Questions</span>
+                                    
+                                    test
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">admin</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">08/21 19:38</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">5 views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>0 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="forum-card mb-4">
+                    <a href="/forum/post/55" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    
+                                        <span class="subject-badge badge-math me-2">Questions</span>
+                                    
+                                    question有图片测试
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">admin</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">08/21 18:59</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">2 views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>1 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="forum-card mb-4">
+                    <a href="/forum/post/56" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    
+                                        <span class="subject-badge badge-math me-2">Questions</span>
+                                    
+                                    question无图片测试
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">admin</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">08/21 19:02</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">1 views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>0 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="forum-card mb-4">
+                    <a href="/forum/post/58" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    
+                                        <span class="subject-badge badge-math me-2">Books</span>
+                                    
+                                    test image
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">admin</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">08/21 19:41</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">0 views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>0 replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                
+                
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="resource-card">
+                    <div class="resource-header text-center">
+                        <i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Ask Questions</h5>
+                        <p class="text-muted mb-4">Ask questions, get answers, and collaborate with fellow STEM students.</p>
+                        <a href="/forum" class="btn-primary w-100">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Browse Questions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-5 mt-5" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #e2e8f0;">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-graduation-cap me-2" style="color: #60a5fa; font-size: 1.5rem;"></i>
+                        <span class="fw-bold fs-5" style="color: #fff; font-family: var(--font-sans);">STEM Academic</span>
+                    </div>
+                    <p class="mb-3" style="color: #cbd5e1;">
+                        Empowering IGCSE & A-Level students with quality academic resources, collaborative forums, and peer support in STEM subjects.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-decoration-none" style="color: #60a5fa; transition: color 0.3s ease;">
+                            <i class="fa-brands fa-github fs-5"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none" style="color: #60a5fa; transition: color 0.3s ease;">
+                            <i class="fa-brands fa-discord fs-5"></i>
+                        </a>
+                        <a href="#" class="text-decoration-none" style="color: #60a5fa; transition: color 0.3s ease;">
+                            <i class="fa-brands fa-reddit fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Home</a></li>
+                        <li class="mb-2"><a href="/dashboard" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Resource Library</a></li>
+                        <li class="mb-2"><a href="/forum" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Community Forum</a></li>
+                        
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Resource Categories</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/category/books" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Books & Materials</a></li>
+                        <li class="mb-2"><a href="/category/homework" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Homework Help</a></li>
+                        <li class="mb-2"><a href="/category/experience" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Study Experiences</a></li>
+                        <li class="mb-2"><a href="/category/questions" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Q&A Discussions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-3">Community</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/about" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">About Platform</a></li>
+                        <li class="mb-2"><a href="/help" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Help & Guidelines</a></li>
+                        <li class="mb-2"><a href="/privacy" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="/contact" class="text-decoration-none" style="color: #cbd5e1; transition: color 0.3s ease;">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr style="border-color: #3b82f6; opacity: 0.3;">
+            <div class="text-center pt-3">
+                <p class="mb-0" style="color: #94a3b8;">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    © 2025 STEM Academic Resources Platform - Empowering IGCSE & A-Level Education | 
+                    <i class="fas fa-users mx-2" style="color: #60a5fa;"></i>
+                    Building Future Scientists
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS - Local -->
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+    
+    
+    <!-- Custom JS -->
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            });
+        }, 5000);
+        
+        // Multi-level dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle desktop hover for submenus
+            const dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
+            
+            dropdownSubmenus.forEach(function(submenu) {
+                const submenuToggle = submenu.querySelector('.dropdown-toggle');
+                const submenuDropdown = submenu.querySelector('.dropdown-menu');
+                
+                // Desktop hover behavior
+                submenu.addEventListener('mouseenter', function() {
+                    if (window.innerWidth > 767) {
+                        submenuDropdown.style.display = 'block';
+                    }
+                });
+                
+                submenu.addEventListener('mouseleave', function() {
+                    if (window.innerWidth > 767) {
+                        submenuDropdown.style.display = 'none';
+                    }
+                });
+                
+                // Mobile click behavior
+                submenuToggle.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 767) {
+                        e.preventDefault();
+                        const isVisible = submenuDropdown.style.display === 'block';
+                        submenuDropdown.style.display = isVisible ? 'none' : 'block';
+                    }
+                });
+            });
+            
+            // Close all submenus when main dropdown closes
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    dropdownSubmenus.forEach(function(submenu) {
+                        const submenuDropdown = submenu.querySelector('.dropdown-menu');
+                        submenuDropdown.style.display = 'none';
+                    });
+                }
+            });
+        });
+        
+        // Add hover effects to footer links
+        document.addEventListener('DOMContentLoaded', function() {
+            const footerLinks = document.querySelectorAll('footer a');
+            footerLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.color = '#fff';
+                });
+                link.addEventListener('mouseleave', function() {
+                    if (this.style.color !== '#fbbf24') {
+                        this.style.color = '#fde68a';
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+    
+    <script>
+        // Language switching function
+        
+        // 语言切换功能
+        function changeLanguage(languageCode) {
+            // 显示加载状态
+            const loadingHtml = `
+                <div class="d-flex justify-content-center align-items-center py-3">
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span>Switching language...</span>
+                </div>
+            `;
+            
+            // 可以在这里显示加载状态
+            
+            // 调用后端 API 切换语言
+            fetch(`/set_language/${languageCode}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 刷新页面以应用新语言
+                    window.location.reload();
+                } else {
+                    console.error('语言切换失败:', data.error);
+                    alert('语言切换失败，请稍后再试');
+                }
+            })
+            .catch(error => {
+                console.error('请求错误:', error);
+                alert('网络错误，请稍后再试');
+            });
+        }
+        
+        // 检查用户登录状态并处理需要登录的链接
+        function handleLoginRequired(event, feature) {
+            
+                event.preventDefault();
+                window.location.href = '/login?login_required=true&from=' + encodeURIComponent(feature);
+                return false;
+            
+            return true;
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 可以在这里添加其他初始化代码
+            
+            
+                // 为我的资源链接添加登录检查
+                 const myResourcesLink = document.querySelector('a[href="/my_resources"]');
+                 if (myResourcesLink) {
+                     myResourcesLink.addEventListener('click', function(e) {
+                         handleLoginRequired(e, 'my_resources');
+                     });
+                 }
+                 
+                 // 为个人资料链接添加登录检查
+                 const profileLink = document.querySelector('a[href="/profile"]');
+                 if (profileLink) {
+                     profileLink.addEventListener('click', function(e) {
+                         handleLoginRequired(e, 'profile');
+                     });
+                 }
+            
+        });
+
+        // Three-Tier Navigation System
+        
+        // Three-Tier Mega Dropdown Navigation
+        const resourcesMenu = document.getElementById('resourcesMenu');
+        const resourcesDropdown = document.getElementById('resourcesDropdown');
+        const subjectsMenu = document.getElementById('subjectsMenu');
+        const levelsMenu = document.getElementById('levelsMenu');
+        const categoriesMenu = document.getElementById('categoriesMenu');
+        
+        // CRITICAL STARTUP VERIFICATION 
+        console.log('='.repeat(50));
+        console.log('CRITICAL STARTUP VERIFICATION');
+        console.log('='.repeat(50));
+        console.log('Menu Elements Check:', {
+            resourcesMenu: !!resourcesMenu,
+            resourcesDropdown: !!resourcesDropdown,
+            subjectsMenu: !!subjectsMenu,
+            levelsMenu: !!levelsMenu,
+            categoriesMenu: !!categoriesMenu
+        });
+        
+        // 验证元素是否真的可以被操作
+        if (!resourcesMenu || !resourcesDropdown || !subjectsMenu || !levelsMenu || !categoriesMenu) {
+            console.error('CRITICAL ERROR: One or more menu elements not found!');
+            console.error('Missing elements:', {
+                resourcesMenu: !resourcesMenu ? 'MISSING' : 'Found',
+                resourcesDropdown: !resourcesDropdown ? 'MISSING' : 'Found', 
+                subjectsMenu: !subjectsMenu ? 'MISSING' : 'Found',
+                levelsMenu: !levelsMenu ? 'MISSING' : 'Found',
+                categoriesMenu: !categoriesMenu ? 'MISSING' : 'Found'
+            });
+            return; // 不继续执行如果元素缺失
+        }
+        
+        console.log('✅ All menu elements found successfully!');
+        
+        let currentSubject = null;
+        let currentLevel = null;
+        let menuTimeout = null;
+
+        // Show/Hide menu with delay
+        function showMenu(menu, delay = 0) {
+            const menuName = menu.id || 'unknown menu';
+            console.log(`🟢 showMenu(${menuName}, delay=${delay})`);
+            clearTimeout(menuTimeout);
+            setTimeout(() => {
+                menu.classList.add('show');
+                console.log(`✅ Menu ${menuName} shown (has show class: ${menu.classList.contains('show')})`);
+            }, delay);
+        }
+
+        function hideMenu(menu, delay = 300) {
+            const menuName = menu.id || 'unknown menu';
+            const wasVisible = menu.classList.contains('show');
+            console.log(`🔴 hideMenu(${menuName}, delay=${delay}) - was visible: ${wasVisible}`);
+            
+            if (delay === 0) {
+                menu.classList.remove('show');
+                const nowVisible = menu.classList.contains('show');
+                console.log(`🔧 IMMEDIATE HIDE ${menuName}: was=${wasVisible}, now=${nowVisible}`);
+                if (wasVisible && nowVisible) {
+                    console.error(`❌ FAILED TO HIDE ${menuName} - 'show' class still present!`);
+                    console.log(`🔍 ${menuName} classes:`, menu.className);
+                    console.log(`🔍 ${menuName} style:`, menu.style.cssText);
+                }
+            } else {
+                setTimeout(() => {
+                    const beforeHide = menu.classList.contains('show');
+                    menu.classList.remove('show');
+                    const afterHide = menu.classList.contains('show');
+                    console.log(`🔧 DELAYED HIDE ${menuName}: before=${beforeHide}, after=${afterHide}`);
+                    if (beforeHide && afterHide) {
+                        console.error(`❌ FAILED TO HIDE ${menuName} after delay - 'show' class still present!`);
+                        console.log(`🔍 ${menuName} classes:`, menu.className);
+                        console.log(`🔍 ${menuName} style:`, menu.style.cssText);
+                    }
+                }, delay);
+            }
+        }
+
+        function hideAllMenus(delay = 300, includeMainMenu = true) {
+            console.log(`🔴 hideAllMenus called with delay=${delay}, includeMainMenu=${includeMainMenu}`);
+            console.log('📊 Current menu states before hideAllMenus:', {
+                L1_visible: subjectsMenu.classList.contains('show'),
+                L2_visible: levelsMenu.classList.contains('show'),
+                L3_visible: categoriesMenu.classList.contains('show'),
+                menuOpen: resourcesMenu.classList.contains('menu-open')
+            });
+            
+            if (includeMainMenu) {
+                console.log('🔴 hideAllMenus - hiding Layer1 (subjects)');
+                hideMenu(subjectsMenu, delay);
+            }
+            console.log('🔴 hideAllMenus - hiding Layer2 (levels)');
+            hideMenu(levelsMenu, delay);
+            console.log('🔴 hideAllMenus - hiding Layer3 (categories)');
+            hideMenu(categoriesMenu, delay);
+            
+            setTimeout(() => {
+                console.log('📊 Menu states after hideAllMenus execution:', {
+                    L1_visible: subjectsMenu.classList.contains('show'),
+                    L2_visible: levelsMenu.classList.contains('show'),
+                    L3_visible: categoriesMenu.classList.contains('show'),
+                    menuOpen: resourcesMenu.classList.contains('menu-open')
+                });
+            }, delay + 100);
+        }
+        
+        function hideChildMenus(delay = 0) {
+            hideMenu(levelsMenu, delay);
+            hideMenu(categoriesMenu, delay);
+        }
+        
+        function clearAllTimers() {
+            console.log('🧹 clearAllTimers() called');
+            clearTimeout(layer1Timer);
+            clearTimeout(layer2Timer);
+            clearTimeout(layer3Timer);
+            clearTimeout(menuTimeout);
+            console.log('✅ All timers cleared');
+        }
+
+        // Main Resources dropdown - click only (removed hover trigger)
+        // Note: Resources menu should only open on click, not hover
+        
+        // Keep menu open when hovering over the opened menu area
+        // Note: Since we removed hover trigger for Resources, we don't auto-close on mouseleave
+        // Menu will be closed by clicking outside or clicking Resources again
+
+        // Subject items hover - show education levels
+        const subjectItems = document.querySelectorAll('.subject-item');
+        subjectItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => {
+                // Remove active state from other subjects
+                subjectItems.forEach(s => s.classList.remove('active'));
+                item.classList.add('active');
+                
+                currentSubject = item.dataset.subject;
+                
+                // Position the levels menu relative to the hovered item
+                const rect = item.getBoundingClientRect();
+                const menuRect = subjectsMenu.getBoundingClientRect();
+                const relativeTop = Math.max(0, rect.top - menuRect.top);
+                
+                // Ensure menu doesn't go off screen
+                const viewportHeight = window.innerHeight;
+                const menuHeight = 280; // Approximate menu height
+                const maxTop = Math.min(relativeTop, viewportHeight - menuHeight - 100);
+                
+                levelsMenu.style.top = maxTop + 'px';
+                console.log('Positioning levels menu at top:', maxTop); // Debug log
+                showMenu(levelsMenu, 100);
+                hideMenu(categoriesMenu, 0);
+            });
+        });
+
+        // Education level items hover - show categories
+        const levelItems = document.querySelectorAll('.level-item');
+        levelItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => {
+                // Remove active state from other levels
+                levelItems.forEach(l => l.classList.remove('active'));
+                item.classList.add('active');
+                
+                currentLevel = item.dataset.level;
+                
+                // Position the categories menu relative to the hovered item
+                const rect = item.getBoundingClientRect();
+                const menuRect = levelsMenu.getBoundingClientRect();
+                const relativeTop = Math.max(0, rect.top - menuRect.top);
+                
+                // Ensure menu doesn't go off screen
+                const viewportHeight = window.innerHeight;
+                const menuHeight = 350; // Approximate menu height for categories
+                const maxTop = Math.min(relativeTop, viewportHeight - menuHeight - 100);
+                
+                categoriesMenu.style.top = maxTop + 'px';
+                console.log('Positioning categories menu at top:', maxTop); // Debug log
+                showMenu(categoriesMenu, 100);
+                
+                // Update category links with current subject and level
+                updateCategoryLinks(currentSubject, currentLevel);
+            });
+        });
+
+        // Update category links
+        function updateCategoryLinks(subject, level) {
+            // Only update links if both subject and level are valid
+            if (!subject || !level || subject === 'undefined' || level === 'undefined') {
+                return;
+            }
+            
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                const category = item.dataset.category;
+                if (category) {
+                    const url = `/subjects/${subject}/${level}/${category}`;
+                    item.href = url;
+                }
+            });
+        }
+
+        // Proper hierarchical menu logic - each layer depends on mouse position
+        function isMouseInElement(e, element) {
+            if (!element) {
+                console.log('⚠️ isMouseInElement: element is null');
+                return false;
+            }
+            if (!element.classList.contains('show')) {
+                console.log(`⚠️ isMouseInElement: ${element.id} does not have 'show' class`);
+                return false;
+            }
+            const rect = element.getBoundingClientRect();
+            const isInside = e.clientX >= rect.left && e.clientX <= rect.right && 
+                   e.clientY >= rect.top && e.clientY <= rect.bottom;
+            
+            if (element.id) {
+                console.log(`🔍 ${element.id} boundary check:`, {
+                    mouse: `(${e.clientX}, ${e.clientY})`,
+                    rect: `(${rect.left}, ${rect.top}, ${rect.right}, ${rect.bottom})`,
+                    isInside
+                });
+            }
+            
+            return isInside;
+        }
+        
+        // Check if mouse is in Resources dropdown button area
+        function isMouseInResourcesDropdown(e) {
+            const rect = resourcesDropdown.getBoundingClientRect();
+            const isInside = e.clientX >= rect.left && e.clientX <= rect.right && 
+                   e.clientY >= rect.top && e.clientY <= rect.bottom;
+            
+            console.log('🔍 Resources dropdown boundary check:', {
+                mouse: `(${e.clientX}, ${e.clientY})`,
+                rect: `(${rect.left}, ${rect.top}, ${rect.right}, ${rect.bottom})`,
+                isInside
+            });
+            
+            return isInside;
+        }
+        
+        // Global mouse tracking for hierarchical menu management
+        let mouseX = 0, mouseY = 0;
+        let layer1Timer, layer2Timer, layer3Timer;
+        let lastLogTime = 0;
+        
+        // Global mouse tracking for hierarchical menu management
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Check if any menu is active
+            const menuIsOpen = resourcesMenu.classList.contains('menu-open');
+            const anyMenuVisible = subjectsMenu.classList.contains('show') || 
+                                 levelsMenu.classList.contains('show') || 
+                                 categoriesMenu.classList.contains('show');
+            
+            // Only process if menus are active
+            if (!menuIsOpen && !anyMenuVisible) {
+                return;
+            }
+            
+            // Check if mouse is within any menu area
+            const resourcesRect = resourcesDropdown.getBoundingClientRect();
+            const inResources = e.clientX >= resourcesRect.left && e.clientX <= resourcesRect.right && 
+                               e.clientY >= resourcesRect.top && e.clientY <= resourcesRect.bottom;
+            
+            const subjectsRect = subjectsMenu.getBoundingClientRect();
+            const inSubjects = subjectsMenu.classList.contains('show') && 
+                             e.clientX >= subjectsRect.left && e.clientX <= subjectsRect.right && 
+                             e.clientY >= subjectsRect.top && e.clientY <= subjectsRect.bottom;
+            
+            const levelsRect = levelsMenu.getBoundingClientRect();
+            const inLevels = levelsMenu.classList.contains('show') && 
+                           e.clientX >= levelsRect.left && e.clientX <= levelsRect.right && 
+                           e.clientY >= levelsRect.top && e.clientY <= levelsRect.bottom;
+            
+            const categoriesRect = categoriesMenu.getBoundingClientRect();
+            const inCategories = categoriesMenu.classList.contains('show') && 
+                               e.clientX >= categoriesRect.left && e.clientX <= categoriesRect.right && 
+                               e.clientY >= categoriesRect.top && e.clientY <= categoriesRect.bottom;
+            
+            // Hide menus if mouse is outside all menu areas
+            if (!inResources && !inSubjects && !inLevels && !inCategories) {
+                subjectsMenu.classList.remove('show');
+                levelsMenu.classList.remove('show');  
+                categoriesMenu.classList.remove('show');
+                resourcesMenu.classList.remove('menu-open');
+            }
+        });
+
+        // Close menus when clicking outside the entire menu system
+        document.addEventListener('click', (e) => {
+            console.log('🖱️ Click detected at:', e.clientX, e.clientY, 'Target:', e.target);
+            
+            // Check if menu is open
+            if (!resourcesMenu.classList.contains('menu-open')) {
+                console.log('🔒 Menu not open, ignoring click');
+                return;
+            }
+            
+            const clickInResourcesMenu = resourcesMenu.contains(e.target);
+            const clickInSubjectsMenu = subjectsMenu.contains(e.target);
+            const clickInLevelsMenu = levelsMenu.contains(e.target);
+            const clickInCategoriesMenu = categoriesMenu.contains(e.target);
+            
+            console.log('🖱️ Click location analysis:', {
+                clickInResourcesMenu,
+                clickInSubjectsMenu, 
+                clickInLevelsMenu,
+                clickInCategoriesMenu
+            });
+            
+            // Don't close if clicking inside any part of the menu system
+            if (clickInResourcesMenu || clickInSubjectsMenu || clickInLevelsMenu || clickInCategoriesMenu) {
+                console.log('🎯 Click inside menu system - not closing');
+                return;
+            }
+            
+            // Close menu if clicking outside the entire menu system
+            console.log('🚪 Click outside menu system - closing all menus');
+            clearAllTimers();
+            resourcesMenu.classList.remove('menu-open');
+            hideAllMenus(0);
+        });
+
+        // Toggle menu when clicking the main Resources dropdown
+        resourcesDropdown.addEventListener('click', (e) => {
+            console.log('Resources button clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isOpen = resourcesMenu.classList.contains('menu-open');
+            console.log('Current menu state - isOpen:', isOpen);
+            
+            if (isOpen) {
+                // Close menu if it's open
+                console.log('Closing menu (was open)');
+                clearAllTimers();
+                resourcesMenu.classList.remove('menu-open');
+                hideAllMenus(0);
+            } else {
+                // Open menu if it's closed
+                console.log('Opening menu (was closed)');
+                clearAllTimers();
+                resourcesMenu.classList.add('menu-open');
+                showMenu(subjectsMenu, 100);
+            }
+        });
+
+        // Handle keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                console.log('⌨️ Escape key pressed - hiding all menus');
+                hideAllMenus(0);
+            }
+            
+            // Debug: Press Ctrl+Shift+M to manually check menu status
+            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                console.log('🔍 MANUAL MENU STATUS CHECK:');
+                console.log('📊 Resources Menu:', {
+                    element: resourcesMenu,
+                    hasMenuOpen: resourcesMenu.classList.contains('menu-open'),
+                    classes: resourcesMenu.className
+                });
+                console.log('📊 Layer1 (Subjects):', {
+                    element: subjectsMenu,
+                    hasShow: subjectsMenu.classList.contains('show'),
+                    classes: subjectsMenu.className,
+                    style: subjectsMenu.style.cssText,
+                    visible: window.getComputedStyle(subjectsMenu).visibility,
+                    opacity: window.getComputedStyle(subjectsMenu).opacity
+                });
+                console.log('📊 Layer2 (Levels):', {
+                    element: levelsMenu,
+                    hasShow: levelsMenu.classList.contains('show'),
+                    classes: levelsMenu.className,
+                    style: levelsMenu.style.cssText,
+                    visible: window.getComputedStyle(levelsMenu).visibility,
+                    opacity: window.getComputedStyle(levelsMenu).opacity
+                });
+                console.log('📊 Layer3 (Categories):', {
+                    element: categoriesMenu,
+                    hasShow: categoriesMenu.classList.contains('show'),
+                    classes: categoriesMenu.className,
+                    style: categoriesMenu.style.cssText,
+                    visible: window.getComputedStyle(categoriesMenu).visibility,
+                    opacity: window.getComputedStyle(categoriesMenu).opacity
+                });
+            }
+        });
+
+        // Add smooth scroll behavior for category clicks
+        const categoryItems = document.querySelectorAll('.category-item');
+        categoryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Check if the item has a valid URL
+                if (item.href && item.href !== 'javascript:void(0)' && !item.href.includes('undefined')) {
+                    // Add a subtle click animation
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        item.style.transform = '';
+                    }, 150);
+                    
+                    hideAllMenus(0);
+                    // Let the default link behavior happen
+                } else {
+                    // Prevent navigation if URL is invalid
+                    e.preventDefault();
+                    console.log('Category item clicked but no valid URL set yet');
+                }
+            });
+        });
+
+        // Add visual feedback for touch devices
+        if ('ontouchstart' in window) {
+            subjectItems.forEach(item => {
+                item.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    item.click();
+                });
+            });
+            
+            levelItems.forEach(item => {
+                item.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    item.click();
+                });
+            });
+        }
+    </script>
+    
+    
+    
+<script>
+// Page JavaScript
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scroll behavior for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add hover effects to cards
+    document.querySelectorAll('.category-card, .resource-card, .forum-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = this.classList.contains('forum-card') ? 'translateX(4px)' : 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = this.classList.contains('forum-card') ? 'translateX(0)' : 'translateY(0)';
+        });
+    });
+    
+    // Animate statistics on scroll
+    const observerOptions = {
+        threshold: 0.5,
+        once: true
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumber = entry.target;
+                const finalNumber = parseInt(statNumber.textContent);
+                let currentNumber = 0;
+                const increment = finalNumber / 50;
+                
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        currentNumber = finalNumber;
+                        clearInterval(timer);
+                    }
+                    statNumber.textContent = Math.floor(currentNumber) + (statNumber.textContent.includes('+') ? '+' : '');
+                }, 30);
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.stat-number').forEach(stat => {
+        observer.observe(stat);
+    });
+});
+</script>
+
+</body>
+</html>

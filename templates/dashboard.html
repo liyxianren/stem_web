@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+
+{% block title %}Resource Library - STEM Academic Resources Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Resource Library Styles */
+    .page-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .search-filters {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .filter-btn {
+        background: transparent;
+        border: 2px solid #e2e8f0;
+        color: var(--color-neutral);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        margin: 0.25rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .filter-btn.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .filter-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+    
+    .resource-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        cursor: pointer;
+    }
+    
+    .resource-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+    
+    .resource-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .resource-header {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .resource-meta {
+        padding: 0 1.5rem 1.5rem;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+    
+    .badge-books { background: #ede9fe; color: #7c3aed; }
+    .badge-competition { background: #fef3c7; color: #d97706; }
+    .badge-university { background: #dcfce7; color: #16a34a; }
+    
+    .resource-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--color-neutral-dark);
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    .resource-description {
+        color: var(--color-neutral);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-stats {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--color-neutral);
+    }
+    
+    .view-details {
+        color: var(--color-primary);
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+    }
+    
+    .resource-card:hover .view-details {
+        color: var(--color-primary-dark);
+    }
+    
+    .upload-btn {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .upload-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        color: white;
+    }
+    
+    .stats-bar {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--color-neutral);
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-2 text-white">Resource Library</h1>
+                <p class="fs-5 mb-0" style="opacity: 0.9;">
+                    Discover high-quality STEM resources for IGCSE & A-Level students
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if current_user.is_authenticated %}
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                        <a href="{{ url_for('submit_resource_page') }}" class="upload-btn">
+                            <i class="fas fa-upload me-2"></i>
+                            Submit Resource
+                        </a>
+                        {% if current_user.user_role == 'admin' or current_user.user_role == 'moderator' %}
+                        <a href="/upload-resource" class="upload-btn" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+                            <i class="fas fa-plus me-2"></i>
+                            Admin Upload
+                        </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="container">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <span class="fw-semibold">Showing <span id="resource-count">24</span> resources</span>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <small class="text-muted">Last updated: Today</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search and Filter Bar -->
+    <div class="search-filters">
+        <div class="row g-3 align-items-center">
+            <!-- Search Box -->
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search resources..." id="searchInput">
+                </div>
+            </div>
+            
+            <!-- Category Filters -->
+            <div class="col-lg-6">
+                <div class="d-flex flex-wrap">
+                    <button class="filter-btn active" data-category="all">All</button>
+                    <button class="filter-btn" data-category="books">Books</button>
+                    <button class="filter-btn" data-category="competition">Competitions</button>
+                    <button class="filter-btn" data-category="university">University</button>
+                </div>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="col-lg-2">
+                <select class="form-select" id="sortSelect">
+                    <option value="newest">Newest</option>
+                    <option value="popular">Most Popular</option>
+                    <option value="downloads">Most Downloaded</option>
+                    <option value="title">A-Z</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resources Grid -->
+    <div class="row g-4" id="resourcesGrid">
+        <!-- Books Resources -->
+        <div class="col-md-6 col-lg-4 resource-item" data-category="books">
+            <a href="/resource/1" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-books">Books</span>
+                        <h5 class="resource-title">A-Level Mathematics Calculus</h5>
+                        <p class="resource-description">
+                            Comprehensive guide covering differentiation and integration techniques for A-Level mathematics students.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Prof. Smith</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>142</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="books">
+            <a href="/resource/2" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-books">Books</span>
+                        <h5 class="resource-title">IGCSE Physics Laboratory Manual</h5>
+                        <p class="resource-description">
+                            Complete lab manual with experiments, procedures, and analysis for IGCSE Physics practical work.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Dr. Johnson</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>89</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="books">
+            <a href="/resource/3" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-books">Books</span>
+                        <h5 class="resource-title">Chemistry Organic Reactions</h5>
+                        <p class="resource-description">
+                            Key organic chemistry reactions with mechanisms and applications for A-Level chemistry.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Prof. Williams</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>67</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Competition Resources -->
+        <div class="col-md-6 col-lg-4 resource-item" data-category="competition">
+            <a href="/resource/4" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-competition">Competition</span>
+                        <h5 class="resource-title">BPHO Past Papers 2020-2024</h5>
+                        <p class="resource-description">
+                            Collection of British Physics Olympiad past papers with detailed solutions and marking schemes.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Competition Team</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>203</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="competition">
+            <a href="/resource/5" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-competition">Competition</span>
+                        <h5 class="resource-title">Physics Bowl Preparation Guide</h5>
+                        <p class="resource-description">
+                            Complete preparation guide for Physics Bowl competition with practice problems and strategies.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Physics Team</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>156</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="competition">
+            <a href="/resource/6" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-competition">Competition</span>
+                        <h5 class="resource-title">USACO Bronze Level Solutions</h5>
+                        <p class="resource-description">
+                            Comprehensive solutions and explanations for USACO Bronze level programming problems.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>CS Team</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>94</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- University Resources -->
+        <div class="col-md-6 col-lg-4 resource-item" data-category="university">
+            <a href="/resource/7" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-university">University</span>
+                        <h5 class="resource-title">Cambridge University Application Guide</h5>
+                        <p class="resource-description">
+                            Complete guide to applying to Cambridge University including personal statements and interview tips.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Admissions Team</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>178</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="university">
+            <a href="/resource/8" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-university">University</span>
+                        <h5 class="resource-title">Engineering Degree Requirements</h5>
+                        <p class="resource-description">
+                            Overview of engineering degree requirements at top UK universities with course comparisons.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Career Advisor</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>112</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 resource-item" data-category="university">
+            <a href="/resource/9" class="resource-link">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="category-badge badge-university">University</span>
+                        <h5 class="resource-title">Medical School Interview Prep</h5>
+                        <p class="resource-description">
+                            Interview preparation materials for medical school applications including common questions.
+                        </p>
+                    </div>
+                    <div class="resource-meta">
+                        <div class="resource-stats">
+                            <div>
+                                <i class="fas fa-user-circle me-1"></i>
+                                <small>Med School Team</small>
+                            </div>
+                            <div class="ms-auto">
+                                <i class="fas fa-download me-1"></i>
+                                <small>145</small>
+                            </div>
+                        </div>
+                        <div class="view-details">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav aria-label="Resources pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Empty State (hidden by default) -->
+<div class="container d-none" id="emptyState">
+    <div class="empty-state">
+        <i class="fas fa-search"></i>
+        <h4>No resources found</h4>
+        <p>Try adjusting your search or filters to find what you're looking for.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const resourceItems = document.querySelectorAll('.resource-item');
+    const resourceCount = document.getElementById('resource-count');
+    const resourcesGrid = document.getElementById('resourcesGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    let currentCategory = 'all';
+    let currentSearch = '';
+    
+    // Filter by category
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active state
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentCategory = this.getAttribute('data-category');
+            filterResources();
+        });
+    });
+    
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        currentSearch = this.value.toLowerCase();
+        filterResources();
+    });
+    
+    // Sort functionality  
+    sortSelect.addEventListener('change', function() {
+        sortResources(this.value);
+    });
+    
+    function filterResources() {
+        let visibleCount = 0;
+        
+        resourceItems.forEach(item => {
+            const category = item.getAttribute('data-category');
+            const title = item.querySelector('.resource-title').textContent.toLowerCase();
+            const description = item.querySelector('.resource-description').textContent.toLowerCase();
+            
+            const matchesCategory = currentCategory === 'all' || category === currentCategory;
+            const matchesSearch = currentSearch === '' || 
+                                 title.includes(currentSearch) || 
+                                 description.includes(currentSearch);
+            
+            if (matchesCategory && matchesSearch) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Update count
+        resourceCount.textContent = visibleCount;
+        
+        // Show/hide empty state
+        if (visibleCount === 0) {
+            resourcesGrid.style.display = 'none';
+            emptyState.classList.remove('d-none');
+        } else {
+            resourcesGrid.style.display = 'flex';
+            resourcesGrid.style.flexWrap = 'wrap';
+            emptyState.classList.add('d-none');
+        }
+    }
+    
+    function sortResources(sortBy) {
+        const container = document.getElementById('resourcesGrid');
+        const items = Array.from(resourceItems);
+        
+        items.sort((a, b) => {
+            switch(sortBy) {
+                case 'title':
+                    const titleA = a.querySelector('.resource-title').textContent;
+                    const titleB = b.querySelector('.resource-title').textContent;
+                    return titleA.localeCompare(titleB);
+                    
+                case 'downloads':
+                    const downloadsA = parseInt(a.querySelector('.resource-stats .ms-auto small').textContent);
+                    const downloadsB = parseInt(b.querySelector('.resource-stats .ms-auto small').textContent);
+                    return downloadsB - downloadsA;
+                    
+                case 'popular':
+                    // For now, same as downloads
+                    const popA = parseInt(a.querySelector('.resource-stats .ms-auto small').textContent);
+                    const popB = parseInt(b.querySelector('.resource-stats .ms-auto small').textContent);
+                    return popB - popA;
+                    
+                default: // newest
+                    return 0; // Keep original order for now
+            }
+        });
+        
+        // Re-append sorted items
+        items.forEach(item => container.appendChild(item));
+    }
+    
+    // Add hover effects
+    resourceItems.forEach(item => {
+        const card = item.querySelector('.resource-card');
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-6px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Initialize count
+    filterResources();
+});
+</script>
+{% endblock %}

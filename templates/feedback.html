@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Feedback - STEM Academic Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .feedback-hero {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+    }
+    
+    .feedback-form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+    }
+    
+    .form-section h5 {
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+    
+    .feedback-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .feedback-type-option {
+        position: relative;
+    }
+    
+    .feedback-type-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .feedback-type-label {
+        display: block;
+        padding: 1.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .feedback-type-label:hover {
+        border-color: var(--color-primary-light);
+        background: #f8fafc;
+    }
+    
+    .feedback-type-option input[type="radio"]:checked + .feedback-type-label {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+        color: var(--color-primary);
+    }
+    
+    .feedback-type-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .feedback-type-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .feedback-type-desc {
+        font-size: 0.9rem;
+        color: #6b7280;
+    }
+    
+    .priority-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+    
+    .priority-option {
+        position: relative;
+    }
+    
+    .priority-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .priority-label {
+        display: block;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .priority-label:hover {
+        border-color: var(--color-primary-light);
+    }
+    
+    .priority-option input[type="radio"]:checked + .priority-label {
+        border-color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .priority-urgent {
+        border-color: #dc2626 !important;
+        color: #dc2626;
+    }
+    
+    .priority-high {
+        border-color: #f59e0b !important;
+        color: #f59e0b;
+    }
+    
+    .priority-medium {
+        border-color: #3b82f6 !important;
+        color: #3b82f6;
+    }
+    
+    .priority-low {
+        border-color: #6b7280 !important;
+        color: #6b7280;
+    }
+    
+    .form-control:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    }
+    
+    .submit-section {
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    .btn-submit {
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-submit:hover {
+        background: var(--color-primary-dark);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .guidelines {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .guidelines h6 {
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+    }
+    
+    .guidelines ul {
+        margin-bottom: 0;
+        padding-left: 1.5rem;
+    }
+    
+    .guidelines li {
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="feedback-hero">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-5 fw-bold mb-3 text-white">
+                <i class="fas fa-comment-dots me-3"></i>
+                Submit Feedback
+            </h1>
+            <p class="lead opacity-90">
+                Help us improve the STEM Academic Platform by sharing your thoughts, reporting bugs, or suggesting new features.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="feedback-form-container">
+        <!-- Guidelines -->
+        <div class="guidelines">
+            <h6><i class="fas fa-info-circle me-2"></i>Feedback Guidelines</h6>
+            <ul>
+                <li><strong>Be specific:</strong> Provide clear details about the issue or suggestion</li>
+                <li><strong>Be constructive:</strong> Focus on how we can improve the platform</li>
+                <li><strong>Include context:</strong> Tell us what you were trying to do when the issue occurred</li>
+                <li><strong>Be patient:</strong> We review all feedback and will respond as soon as possible</li>
+            </ul>
+        </div>
+
+        <form method="POST">
+            <!-- Feedback Type -->
+            <div class="form-section">
+                <h5><i class="fas fa-tag me-2"></i>What type of feedback are you submitting?</h5>
+                <div class="feedback-type-grid">
+                    <div class="feedback-type-option">
+                        <input type="radio" name="feedback_type" value="bug" id="type_bug" required>
+                        <label for="type_bug" class="feedback-type-label">
+                            <i class="fas fa-bug feedback-type-icon text-danger"></i>
+                            <div class="feedback-type-name">Bug Report</div>
+                            <div class="feedback-type-desc">Something isn't working</div>
+                        </label>
+                    </div>
+                    <div class="feedback-type-option">
+                        <input type="radio" name="feedback_type" value="suggestion" id="type_suggestion" required>
+                        <label for="type_suggestion" class="feedback-type-label">
+                            <i class="fas fa-lightbulb feedback-type-icon text-warning"></i>
+                            <div class="feedback-type-name">Suggestion</div>
+                            <div class="feedback-type-desc">Idea for improvement</div>
+                        </label>
+                    </div>
+                    <div class="feedback-type-option">
+                        <input type="radio" name="feedback_type" value="complaint" id="type_complaint" required>
+                        <label for="type_complaint" class="feedback-type-label">
+                            <i class="fas fa-exclamation-triangle feedback-type-icon text-orange"></i>
+                            <div class="feedback-type-name">Complaint</div>
+                            <div class="feedback-type-desc">Service or content issue</div>
+                        </label>
+                    </div>
+                    <div class="feedback-type-option">
+                        <input type="radio" name="feedback_type" value="other" id="type_other" required>
+                        <label for="type_other" class="feedback-type-label">
+                            <i class="fas fa-comment feedback-type-icon text-info"></i>
+                            <div class="feedback-type-name">Other</div>
+                            <div class="feedback-type-desc">General feedback</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="form-section">
+                <h5><i class="fas fa-heading me-2"></i>Title</h5>
+                <input type="text" class="form-control" name="title" placeholder="Brief summary of your feedback" required minlength="5" maxlength="200">
+                <small class="form-text text-muted">Provide a clear, concise title (5-200 characters)</small>
+            </div>
+
+            <!-- Description -->
+            <div class="form-section">
+                <h5><i class="fas fa-align-left me-2"></i>Description</h5>
+                <textarea class="form-control" name="description" rows="6" placeholder="Please provide detailed information about your feedback..." required minlength="10" maxlength="2000"></textarea>
+                <small class="form-text text-muted">Detailed description (10-2000 characters). Include steps to reproduce if reporting a bug.</small>
+            </div>
+
+            <!-- Priority -->
+            <div class="form-section">
+                <h5><i class="fas fa-flag me-2"></i>Priority Level</h5>
+                <div class="priority-grid">
+                    <div class="priority-option">
+                        <input type="radio" name="priority" value="low" id="priority_low">
+                        <label for="priority_low" class="priority-label priority-low">
+                            <div><strong>Low</strong></div>
+                            <small>Minor issue</small>
+                        </label>
+                    </div>
+                    <div class="priority-option">
+                        <input type="radio" name="priority" value="medium" id="priority_medium" checked>
+                        <label for="priority_medium" class="priority-label priority-medium">
+                            <div><strong>Medium</strong></div>
+                            <small>General issue</small>
+                        </label>
+                    </div>
+                    <div class="priority-option">
+                        <input type="radio" name="priority" value="high" id="priority_high">
+                        <label for="priority_high" class="priority-label priority-high">
+                            <div><strong>High</strong></div>
+                            <small>Important issue</small>
+                        </label>
+                    </div>
+                    <div class="priority-option">
+                        <input type="radio" name="priority" value="urgent" id="priority_urgent">
+                        <label for="priority_urgent" class="priority-label priority-urgent">
+                            <div><strong>Urgent</strong></div>
+                            <small>Critical issue</small>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <h6 class="mb-3">Ready to submit your feedback?</h6>
+                <p class="text-muted mb-4">
+                    We appreciate your input and will review your feedback carefully. 
+                    You can expect a response within 1-3 business days.
+                </p>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    Submit Feedback
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,594 @@
+{% extends "base.html" %}
+
+{% block title %}Science Academic Club - Empowering STEM Education{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* STEM Academic Platform - Professional Academic Style */
+    :root {
+        /* Academic Color System */
+        --primary-blue: #1e3a8a; /* Professional blue for headers */
+        --secondary-blue: #3b82f6; /* Interactive blue */
+        --accent-teal: #0d9488; /* Science accent color */
+        --neutral-gray: #64748b; /* Professional gray */
+        --light-gray: #f8fafc; /* Background gray */
+        --success-green: #059669; /* Success/approved color */
+        --warning-amber: #d97706; /* Warning/pending color */
+        
+        /* Typography */
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+        
+        /* Shadows */
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    
+    body {
+        font-family: var(--font-sans);
+        background: linear-gradient(135deg, var(--light-gray) 0%, #ffffff 100%);
+        color: #1e293b;
+        line-height: 1.6;
+    }
+    
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>') repeat;
+        opacity: 0.3;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* 5-column layout support */
+    .col-xl-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+    
+    @media (max-width: 1199.98px) {
+        .col-xl-2-4 {
+            width: 50%;
+        }
+    }
+    
+    @media (max-width: 767.98px) {
+        .col-xl-2-4 {
+            width: 100%;
+        }
+    }
+    
+    /* Category Cards */
+    .category-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--secondary-blue);
+    }
+    
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+    }
+    
+    .books-icon { background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%); }
+    .homework-icon { background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); }
+    .experience-icon { background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%); }
+    .tests-icon { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+    .notes-icon { background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%); }
+    .questions-icon { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    
+    /* Resource Card */
+    .resource-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .resource-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .resource-header {
+        padding: 1.5rem 1.5rem 1rem;
+        flex-grow: 1;
+    }
+    
+    .resource-meta {
+        padding: 0 1.5rem 1.5rem;
+        border-top: 1px solid #f1f5f9;
+        margin-top: auto;
+    }
+    
+    .subject-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .badge-math { background: #ede9fe; color: #7c3aed; }
+    .badge-physics { background: #fee2e2; color: #dc2626; }
+    .badge-chemistry { background: #dcfce7; color: #16a34a; }
+    .badge-biology { background: #fef3c7; color: #d97706; }
+    
+    /* Forum Post Card */
+    .forum-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--secondary-blue);
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .forum-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateX(2px);
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+        color: white;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--secondary-blue);
+        color: var(--secondary-blue);
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .btn-outline:hover {
+        background: var(--secondary-blue);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    /* Stats Section */
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 1px solid #e2e8f0;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        line-height: 1;
+    }
+    
+    .stat-label {
+        color: var(--neutral-gray);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 0;
+        }
+        
+        .subject-card {
+            padding: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4" style="color: white;">
+                    Science Academic Club
+                </h1>
+                <p class="fs-5 mb-4" style="opacity: 0.9;">
+                    Access high-quality academic resources, collaborate with peers, and excel in Mathematics, Physics, Chemistry, and Biology.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3">
+                    {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Join Community
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Sign In
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg px-4">
+                            <i class="fas fa-book-open me-2"></i>
+                            Browse Resources
+                        </a>
+                        <a href="/forum" class="btn btn-outline-light btn-lg px-4">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Questions
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="row g-3 mt-4">
+                    <div class="col-6">
+                        <div class="stats-card">
+                            <div class="stat-number">{{ stats.resources }}+</div>
+                            <div class="stat-label">Resources</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stats-card">
+                            <div class="stat-number">{{ stats.users }}+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Post Categories -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Explore by Category</h2>
+            <p class="fs-5 text-muted mx-auto" style="max-width: 600px;">
+                Find resources across all major categories
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=books" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon books-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Books</h4>
+                        <p class="text-muted small">Textbooks, Reference Materials, Study Guides</p>
+                        <small class="text-primary fw-semibold">Browse Books</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=homework" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon homework-icon">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Homework</h4>
+                        <p class="text-muted small">Homework Paper, Homework help</p>
+                        <small class="text-danger fw-semibold">Browse Notes</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=tests" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon tests-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Tests</h4>
+                        <p class="text-muted small">Test paper, Past paper</p>
+                        <small class="text-success fw-semibold">Browse Tests</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=notes" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon notes-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Notes</h4>
+                        <p class="text-muted small">Study Notes, learning experiences</p>
+                        <small class="text-success fw-semibold">Browse Notes</small>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-6 col-xl-2-4">
+                <a href="/forum?category=questions" class="text-decoration-none">
+                    <div class="category-card">
+                        <div class="category-icon questions-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Questions</h4>
+                        <p class="text-muted small">Ask Questions, Get Answers, Community Help</p>
+                        <small class="text-info fw-semibold">Browse Questions</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Resources -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Featured Resources</h2>
+            <p class="fs-5 text-muted">Recently uploaded and highly rated materials</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for resource in featured_resources %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                    <div class="resource-card">
+                        <div class="resource-header">
+                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                {% if resource.category == 'IGCSE' %}
+                                    <span class="subject-badge badge-math">IGCSE</span>
+                                {% elif resource.category == 'A-LEVEL' %}
+                                    <span class="subject-badge badge-physics">A-Level</span>
+                                {% elif resource.category == 'BPHO' %}
+                                    <span class="subject-badge badge-chemistry">BPHO</span>
+                                {% elif resource.category == 'PHYSICS_BOWL' %}
+                                    <span class="subject-badge badge-biology">Physics Bowl</span>
+                                {% elif resource.category == 'UNIVERSITY_RESOURCES' %}
+                                    <span class="subject-badge badge-math">University</span>
+                                {% endif %}
+                                <small class="text-muted">{{ resource.created_at | month_day }}</small>
+                            </div>
+                            <h5 class="fw-bold mb-2">{{ resource.title }}</h5>
+                            <p class="text-muted small mb-3">{{ resource.description[:100] }}{% if resource.description|length > 100 %}...{% endif %}</p>
+                        </div>
+                        <div class="resource-meta">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-circle text-muted me-2"></i>
+                                    <small class="text-muted">By {{ resource.author_name }}</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-eye text-muted me-1"></i>
+                                    <small class="text-muted">{{ resource.view_count }}</small>
+                                    <i class="fas fa-heart text-muted ms-2 me-1"></i>
+                                    <small class="text-muted">{{ resource.like_count or 0 }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+            
+            {% if featured_resources|length == 0 %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No resources available yet. <a href="{{ url_for('admin_new_resource') if current_user.is_authenticated and current_user.user_role == 'admin' else '#' }}">Be the first to contribute!</a></p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{{ url_for('subjects_overview') }}" class="btn-primary">
+                <i class="fas fa-arrow-right me-2"></i>
+                View All Resources
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Forum Activity -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="h1 fw-bold mb-3" style="color: var(--primary-blue);">Recent Questions</h2>
+            <p class="fs-5 text-muted">Ask questions and get help from the community</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% for post in recent_posts %}
+                <div class="forum-card mb-4">
+                    <a href="{{ url_for('forum_post_detail', post_id=post.id) }}" class="text-decoration-none">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-2 text-dark">
+                                    {% if post.category == 'books' %}
+                                        <span class="subject-badge badge-math me-2">Books</span>
+                                    {% elif post.category == 'homework' %}
+                                        <span class="subject-badge badge-physics me-2">Homework</span>
+                                    {% elif post.category == 'experience' %}
+                                        <span class="subject-badge badge-chemistry me-2">Experience</span>
+                                    {% elif post.category == 'activities' %}
+                                        <span class="subject-badge badge-biology me-2">Activities</span>
+                                    {% elif post.category == 'questions' %}
+                                        <span class="subject-badge badge-math me-2">Questions</span>
+                                    {% else %}
+                                        <span class="subject-badge badge-math me-2">{{ post.category|title }}</span>
+                                    {% endif %}
+                                    {{ post.title }}
+                                </h6>
+                                <div class="d-flex align-items-center text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    <span class="me-3">{{ post.author_name }}</span>
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span class="me-3">{{ post.created_at | short_time }}</span>
+                                    <i class="fas fa-eye me-1"></i>
+                                    <span class="me-3">{{ post.view_count }} views</span>
+                                    <i class="fas fa-comments me-1"></i>
+                                    <span>{{ post.reply_count }} replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+                
+                {% if recent_posts|length == 0 %}
+                <div class="forum-card">
+                    <div class="text-center py-4">
+                        <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No questions yet</h5>
+                        <p class="text-muted">Be the first to ask a question!</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="resource-card">
+                    <div class="resource-header text-center">
+                        <i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Ask Questions</h5>
+                        <p class="text-muted mb-4">Ask questions, get answers, and collaborate with fellow STEM students.</p>
+                        <a href="/forum" class="btn-primary w-100">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            Browse Questions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Page JavaScript
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add smooth scroll behavior for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add hover effects to cards
+    document.querySelectorAll('.category-card, .resource-card, .forum-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = this.classList.contains('forum-card') ? 'translateX(4px)' : 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = this.classList.contains('forum-card') ? 'translateX(0)' : 'translateY(0)';
+        });
+    });
+    
+    // Animate statistics on scroll
+    const observerOptions = {
+        threshold: 0.5,
+        once: true
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumber = entry.target;
+                const finalNumber = parseInt(statNumber.textContent);
+                let currentNumber = 0;
+                const increment = finalNumber / 50;
+                
+                const timer = setInterval(() => {
+                    currentNumber += increment;
+                    if (currentNumber >= finalNumber) {
+                        currentNumber = finalNumber;
+                        clearInterval(timer);
+                    }
+                    statNumber.textContent = Math.floor(currentNumber) + (statNumber.textContent.includes('+') ? '+' : '');
+                }, 30);
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.stat-number').forEach(stat => {
+        observer.observe(stat);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject_title }} Resources - STEM Resource Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 50%, #1d4ed8 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.3);
+    }
+    
+    /* Add subtle pattern overlay */
+    .category-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    /* Breadcrumb and header content styles */
+    .breadcrumb-nav {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .breadcrumb-nav a {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-nav a:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    .breadcrumb-nav .breadcrumb-divider {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0 0.75rem;
+        font-weight: 600;
+    }
+    
+    .breadcrumb-nav strong {
+        color: white;
+        font-weight: 700;
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+    }
+    
+    .category-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+        line-height: 1.2;
+    }
+    
+    .category-header p {
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+        opacity: 0.95 !important;
+        line-height: 1.4;
+    }
+    
+    .resource-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .resource-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .resource-card a {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-card a:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+    
+    .resource-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-image-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: #6b7280;
+        font-size: 3rem;
+    }
+    
+    .resource-meta {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .resource-meta .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+    }
+    
+    .resource-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .resource-stats .stat {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .filter-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .back-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .no-resources {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6b7280;
+    }
+    
+    .no-resources i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: #d1d5db;
+    }
+    
+    /* Education Level Tabs */
+    .category-tabs {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .category-btn {
+        background: transparent;
+        border: 2px solid #e2e8f0;
+        color: var(--color-neutral);
+        padding: 0.75rem 1.25rem;
+        border-radius: 25px;
+        margin: 0.25rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+    
+    .category-btn.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+    }
+    
+    .category-btn:hover:not(.active) {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+    
+    .category-btn .count {
+        background: rgba(255,255,255,0.2);
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+    }
+    
+    .category-btn.active .count {
+        background: rgba(255,255,255,0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Subject Header -->
+<div class="category-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h2 mb-3">{{ subject_title }} Resources</h1>
+                <p class="mb-0 opacity-75">
+                    Explore {{ subject_title.lower() }} resources across all education levels: IGCSE, A-Level, AP, Competition, and University
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('subjects_overview') }}" class="back-btn me-2">
+                    <i class="fas fa-arrow-left me-2"></i>All Subjects
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="back-btn">
+                    <i class="fas fa-home me-2"></i>Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Education Level Tabs -->
+    <div class="category-tabs">
+        <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <button class="category-btn active" data-level="all">
+                All Levels <span class="count">{{ level_counts.values() | sum }}</span>
+            </button>
+            <button class="category-btn" data-level="IGCSE">
+                IGCSE <span class="count">{{ level_counts.get('IGCSE', 0) }}</span>
+            </button>
+            <button class="category-btn" data-level="A-LEVEL">
+                A-Level <span class="count">{{ level_counts.get('A-LEVEL', 0) }}</span>
+            </button>
+            <button class="category-btn" data-level="AP">
+                AP <span class="count">{{ level_counts.get('AP', 0) }}</span>
+            </button>
+            <button class="category-btn" data-level="COMP">
+                Competition <span class="count">{{ level_counts.get('COMP', 0) }}</span>
+            </button>
+            <button class="category-btn" data-level="UNIV">
+                University <span class="count">{{ level_counts.get('UNIV', 0) }}</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Resources Grid -->
+    <div class="row g-4" id="resourcesGrid">
+        {% if all_resources %}
+            {% for resource in all_resources %}
+            <div class="col-md-6 col-lg-4 resource-item" data-level="{{ resource.category }}">
+                <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                    <div class="resource-card">
+                        {% if resource.cover_image %}
+                            <img src="{{ resource.cover_image | image_url }}" alt="{{ resource.title }}" class="resource-image">
+                        {% else %}
+                            <div class="resource-image-placeholder">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="resource-meta">
+                            {% if resource.category == 'IGCSE' %}
+                                <span class="badge bg-primary">IGCSE</span>
+                            {% elif resource.category == 'A-LEVEL' %}
+                                <span class="badge bg-success">A-Level</span>
+                            {% elif resource.category == 'AP' %}
+                                <span class="badge bg-warning">AP</span>
+                            {% elif resource.category == 'COMP' %}
+                                <span class="badge bg-info">Competition</span>
+                            {% elif resource.category == 'UNIV' %}
+                                <span class="badge bg-dark">University</span>
+                            {% endif %}
+                            <span class="badge bg-secondary">{{ resource.resource_type|title }}</span>
+                            {% if resource.difficulty_level == 'beginner' %}
+                                <span class="badge bg-success">Beginner</span>
+                            {% elif resource.difficulty_level == 'intermediate' %}
+                                <span class="badge bg-warning">Intermediate</span>
+                            {% elif resource.difficulty_level == 'advanced' %}
+                                <span class="badge bg-danger">Advanced</span>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="mb-2 text-dark">
+                            {{ resource.title }}
+                        </h5>
+                        
+                        <p class="text-muted mb-3">{{ resource.description[:120] }}{% if resource.description|length > 120 %}...{% endif %}</p>
+                        
+                        <div class="resource-stats">
+                            <div class="d-flex gap-3 mb-2">
+                                <div class="stat">
+                                    <i class="fas fa-eye"></i>
+                                    <span class="view-count">{{ resource.view_count }}</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="like-count">{{ resource.like_count or 0 }}</span>
+                                </div>
+                                <div class="stat">
+                                    <i class="fas fa-download"></i>
+                                    <span class="download-count">{{ resource.download_count or 0 }}</span>
+                                </div>
+                            </div>
+                            <div class="text-muted small">
+                                <i class="fas fa-user-circle me-1"></i>{{ resource.author_name }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <div class="no-resources">
+                <i class="fas fa-folder-open"></i>
+                <h4>No Resources Available</h4>
+                <p>There are currently no {{ subject_title.lower() }} resources available. Check back later!</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Education level filtering functionality (similar to Forum page)
+document.addEventListener('DOMContentLoaded', function() {
+    const levelButtons = document.querySelectorAll('.category-btn');
+    const resourceItems = document.querySelectorAll('.resource-item');
+    const emptyState = document.querySelector('.no-resources');
+    
+    // Add click event listeners to level buttons
+    levelButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active state
+            levelButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const level = this.getAttribute('data-level');
+            filterByLevel(level);
+        });
+    });
+    
+    function filterByLevel(level) {
+        let visibleCount = 0;
+        
+        resourceItems.forEach(item => {
+            const itemLevel = item.getAttribute('data-level');
+            
+            if (level === 'all' || itemLevel === level) {
+                item.style.display = 'block';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        // Show/hide empty state
+        if (emptyState) {
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+                // Update empty state message based on selected level
+                const emptyMessage = emptyState.querySelector('p');
+                if (emptyMessage) {
+                    if (level === 'all') {
+                        emptyMessage.textContent = 'There are currently no {{ subject_title.lower() }} resources available. Check back later!';
+                    } else {
+                        const levelNames = {
+                            'IGCSE': 'IGCSE',
+                            'A-LEVEL': 'A-Level',
+                            'AP': 'AP',
+                            'COMP': 'Competition',
+                            'UNIV': 'University'
+                        };
+                        const levelName = levelNames[level] || level;
+                        emptyMessage.textContent = `There are currently no ${levelName} {{ subject_title.lower() }} resources available. Check back later!`;
+                    }
+                }
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+        
+        // Animate the filtered items
+        setTimeout(() => {
+            resourceItems.forEach(item => {
+                if (item.style.display === 'block') {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.transition = 'all 0.3s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 50);
+                }
+            });
+        }, 100);
+    }
+    
+    // Add hover effects to resource cards
+    resourceItems.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %}

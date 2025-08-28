@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Admin Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-header {
+        background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+    }
+    
+    .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    .user-table {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+    
+    .table-header {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .user-role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .role-admin {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .role-moderator {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .role-student {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-approved {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+    
+    .status-pending {
+        background: #fef3c7;
+        color: #d97706;
+    }
+    
+    .status-rejected {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .action-btn {
+        padding: 0.25rem 0.75rem;
+        margin: 0.125rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-reset-password {
+        background: #f59e0b;
+        color: white;
+    }
+    
+    .btn-reset-password:hover {
+        background: #d97706;
+        color: white;
+    }
+    
+    .btn-change-role {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .btn-change-role:hover {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-change-status {
+        background: #10b981;
+        color: white;
+    }
+    
+    .btn-change-status:hover {
+        background: #059669;
+        color: white;
+    }
+    
+    .activity-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+    
+    .active-user {
+        background: #10b981;
+    }
+    
+    .inactive-user {
+        background: #6b7280;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        margin-right: 1rem;
+    }
+    
+    .user-info {
+        display: flex;
+        align-items: center;
+    }
+    
+    .user-details h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    .user-details small {
+        color: #6b7280;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-users me-3"></i>
+                    User Management
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Manage users, roles, and permissions</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number">{{ stats.total_users }}</div>
+                <div class="text-muted">Total Users</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number">{{ stats.role_stats|selectattr('user_role', 'equalto', 'student')|map(attribute='count')|sum or 0 }}</div>
+                <div class="text-muted">Students</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number">{{ stats.role_stats|selectattr('user_role', 'equalto', 'moderator')|map(attribute='count')|sum or 0 }}</div>
+                <div class="text-muted">Moderators</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="stats-number">{{ stats.status_stats|selectattr('registration_status', 'equalto', 'pending')|map(attribute='count')|sum or 0 }}</div>
+                <div class="text-muted">Pending Approval</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="user-table">
+        <div class="table-header">
+            <h4 class="mb-0">
+                <i class="fas fa-list me-2"></i>
+                All Users
+            </h4>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>School & ID</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Activity</th>
+                        <th>Last Active</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr id="user-{{ user.id }}">
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">{{ user.username[0].upper() }}</div>
+                                <div class="user-details">
+                                    <h6>{{ user.username }}</h6>
+                                    <small>{{ user.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="user-details">
+                                <h6 class="mb-0">{{ user.school or 'N/A' }}</h6>
+                                <small class="text-muted">ID: {{ user.student_id or 'N/A' }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="user-role-badge role-{{ user.user_role }}" id="role-{{ user.id }}">
+                                {{ user.user_role }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ user.registration_status }}" id="status-{{ user.id }}">
+                                {{ user.registration_status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="activity-indicator {{ 'active-user' if user.last_activity else 'inactive-user' }}"></span>
+                                <small>
+                                    {{ user.post_count or 0 }} posts, {{ user.comment_count or 0 }} comments
+                                </small>
+                            </div>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {% if user.last_activity %}
+                                    {{ user.last_activity | date_only }}
+                                {% else %}
+                                    Never
+                                {% endif %}
+                            </small>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ user.created_at | date_only }}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap">
+                                <button class="action-btn btn-reset-password" onclick="showResetPasswordModal({{ user.id }}, '{{ user.username }}')">
+                                    <i class="fas fa-key me-1"></i>Reset Password
+                                </button>
+                                <button class="action-btn btn-change-role" onclick="showChangeRoleModal({{ user.id }}, '{{ user.username }}', '{{ user.user_role }}')">
+                                    <i class="fas fa-user-tag me-1"></i>Change Role
+                                </button>
+                                <button class="action-btn btn-change-status" onclick="showChangeStatusModal({{ user.id }}, '{{ user.username }}', '{{ user.registration_status }}')">
+                                    <i class="fas fa-toggle-on me-1"></i>Change Status
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reset User Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Reset password for user: <strong id="resetPasswordUsername"></strong></p>
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="Enter new password (min 6 characters)">
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="confirmResetPassword()">Reset Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Role Modal -->
+<div class="modal fade" id="changeRoleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change User Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Change role for user: <strong id="changeRoleUsername"></strong></p>
+                <div class="mb-3">
+                    <label for="newRole" class="form-label">New Role</label>
+                    <select class="form-select" id="newRole">
+                        <option value="student">Student</option>
+                        <option value="moderator">Moderator</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="confirmChangeRole()">Change Role</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Status Modal -->
+<div class="modal fade" id="changeStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change User Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Change registration status for user: <strong id="changeStatusUsername"></strong></p>
+                <div class="mb-3">
+                    <label for="newStatus" class="form-label">New Status</label>
+                    <select class="form-select" id="newStatus">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="confirmChangeStatus()">Change Status</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentUserId = null;
+
+function showResetPasswordModal(userId, username) {
+    currentUserId = userId;
+    document.getElementById('resetPasswordUsername').textContent = username;
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+    new bootstrap.Modal(document.getElementById('resetPasswordModal')).show();
+}
+
+function showChangeRoleModal(userId, username, currentRole) {
+    currentUserId = userId;
+    document.getElementById('changeRoleUsername').textContent = username;
+    document.getElementById('newRole').value = currentRole;
+    new bootstrap.Modal(document.getElementById('changeRoleModal')).show();
+}
+
+function showChangeStatusModal(userId, username, currentStatus) {
+    currentUserId = userId;
+    document.getElementById('changeStatusUsername').textContent = username;
+    document.getElementById('newStatus').value = currentStatus;
+    new bootstrap.Modal(document.getElementById('changeStatusModal')).show();
+}
+
+function confirmResetPassword() {
+    const newPassword = document.getElementById('newPassword').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    
+    if (!newPassword || newPassword.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
+    
+    if (!confirm('Are you sure you want to reset this user\'s password?')) {
+        return;
+    }
+    
+    fetch(`/admin/users/${currentUserId}/reset-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            password: newPassword
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();
+            alert(data.message);
+        } else {
+            alert('Error: ' + (data.error || 'Failed to reset password'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while resetting the password');
+    });
+}
+
+function confirmChangeRole() {
+    const newRole = document.getElementById('newRole').value;
+    
+    if (!confirm(`Are you sure you want to change this user's role to ${newRole}?`)) {
+        return;
+    }
+    
+    fetch(`/admin/users/${currentUserId}/change-role`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            role: newRole
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('changeRoleModal')).hide();
+            // Update the role badge in the table
+            const roleBadge = document.getElementById(`role-${currentUserId}`);
+            roleBadge.className = `user-role-badge role-${newRole}`;
+            roleBadge.textContent = newRole;
+            alert(data.message);
+        } else {
+            alert('Error: ' + (data.error || 'Failed to change role'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while changing the role');
+    });
+}
+
+function confirmChangeStatus() {
+    const newStatus = document.getElementById('newStatus').value;
+    
+    if (!confirm(`Are you sure you want to change this user's status to ${newStatus}?`)) {
+        return;
+    }
+    
+    fetch(`/admin/users/${currentUserId}/change-status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('changeStatusModal')).hide();
+            // Update the status badge in the table
+            const statusBadge = document.getElementById(`status-${currentUserId}`);
+            statusBadge.className = `status-badge status-${newStatus}`;
+            statusBadge.textContent = newStatus;
+            alert(data.message);
+        } else {
+            alert('Error: ' + (data.error || 'Failed to change status'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while changing the status');
+    });
+}
+</script>
+{% endblock %}
