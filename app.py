@@ -1958,11 +1958,16 @@ def subjects_category(subject):
         
         # Group resources by education level
         resources_by_level = {}
+        level_counts = {}
+        print(f"🔧 DEBUG: Processing {len(all_resources)} resources for subject '{subject}'")
         for resource in all_resources:
             level = resource['category']
             if level not in resources_by_level:
                 resources_by_level[level] = []
+                level_counts[level] = 0
             resources_by_level[level].append(resource)
+            level_counts[level] += 1
+        print(f"🔧 DEBUG: level_counts = {level_counts}")
         
         cursor.close()
         connection.close()
@@ -1980,6 +1985,7 @@ def subjects_category(subject):
         return render_template('subjects_category.html', 
                              all_resources=all_resources,
                              resources_by_level=resources_by_level,
+                             level_counts=level_counts,
                              subject=subject,
                              subject_title=subject_title,
                              page_title=f"{subject_title} Resources")
@@ -3266,6 +3272,14 @@ def category_resources(category_name):
         cursor.close()
         connection.close()
         
+        # Calculate level_counts for template
+        level_counts = {}
+        for resource in resources:
+            level = resource.get('education_level', 'Other')
+            if level not in level_counts:
+                level_counts[level] = 0
+            level_counts[level] += 1
+        
         # Create display title
         category_titles = {
             'books': 'Books & Reading Materials',
@@ -3279,6 +3293,7 @@ def category_resources(category_name):
         
         return render_template('subjects_category.html', 
                              resources=resources,
+                             level_counts=level_counts,
                              category_name=category_name,
                              page_title=page_title,
                              category=category_name,
@@ -3327,8 +3342,17 @@ def education_resources(education_type):
         cursor.close()
         connection.close()
         
+        # Calculate level_counts for template
+        level_counts = {}
+        for resource in resources:
+            level = resource.get('education_level', 'Other')
+            if level not in level_counts:
+                level_counts[level] = 0
+            level_counts[level] += 1
+        
         return render_template('subjects_category.html', 
                              resources=resources,
+                             level_counts=level_counts,
                              page_title=f'{education_type.upper()} Education Resources',
                              category=education_type.upper(),
                              category_title=f'{education_type.upper()} Education Resources')
@@ -3373,8 +3397,17 @@ def competition_resources(competition_type):
         cursor.close()
         connection.close()
         
+        # Calculate level_counts for template
+        level_counts = {}
+        for resource in resources:
+            level = resource.get('category', 'Other')
+            if level not in level_counts:
+                level_counts[level] = 0
+            level_counts[level] += 1
+        
         return render_template('subjects_category.html', 
-                             resources=resources, 
+                             resources=resources,
+                             level_counts=level_counts,
                              competition_type=competition_display_name,
                              page_title=f'{competition_display_name} Competition Resources',
                              category=competition_name.upper(),
@@ -3407,8 +3440,17 @@ def university_resources():
         cursor.close()
         connection.close()
         
+        # Calculate level_counts for template
+        level_counts = {}
+        for resource in resources:
+            level = resource.get('category', 'Other')
+            if level not in level_counts:
+                level_counts[level] = 0
+            level_counts[level] += 1
+        
         return render_template('subjects_category.html', 
-                             resources=resources, 
+                             resources=resources,
+                             level_counts=level_counts,
                              page_title='University Resources',
                              category='UNIVERSITY_RESOURCES',
                              category_title='University Resources')
@@ -3458,8 +3500,17 @@ def all_university_resources():
         cursor.close()
         connection.close()
         
+        # Calculate level_counts for template
+        level_counts = {}
+        for resource in resources:
+            level = resource.get('category', 'Other')
+            if level not in level_counts:
+                level_counts[level] = 0
+            level_counts[level] += 1
+        
         return render_template('subjects_category.html', 
-                             resources=resources, 
+                             resources=resources,
+                             level_counts=level_counts,
                              university_type='All University',
                              page_title='University Resources',
                              category='UNIVERSITY_RESOURCES',
@@ -4383,4 +4434,9 @@ if __name__ == '__main__':
     
     # Zeabur部署配置
     port = int(os.environ.get('PORT', 5000))
+    print("🚀 STEM教育平台启动 - 版本 v2.1 (level_counts修复版)")
+    print("🔧 所有subjects_category.html模板已修复level_counts问题")
+    print(f"🌐 本地访问地址: http://localhost:{port}")
+    print(f"🌐 网络访问地址: http://0.0.0.0:{port}")
+    print("📝 现在可以测试 /subjects/math 链接是否正常工作")
     app.run(host='0.0.0.0', port=port, debug=False)

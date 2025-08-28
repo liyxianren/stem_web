@@ -130,11 +130,13 @@
     <div class="row">
         <!-- Mathematics -->
         <div class="col-lg-6 mb-4">
-            <a href="{{ url_for('subjects_category', subject='math') }}" class="category-card d-block">
+            <div class="category-card">
                 <div class="category-icon bg-primary mx-auto">
                     <i class="fas fa-calculator"></i>
                 </div>
-                <h3 class="text-center mb-2">Mathematics</h3>
+                <a href="{{ url_for('subjects_category', subject='math') }}" class="text-decoration-none">
+                    <h3 class="text-center mb-2 text-dark">Mathematics</h3>
+                </a>
                 <p class="text-center text-muted mb-3">
                     Comprehensive mathematics resources covering IGCSE, A-Level, AP, Competition, and University levels
                 </p>
@@ -145,7 +147,9 @@
                         <small class="text-muted">Resources Available</small>
                     </div>
                     <div class="text-end">
-                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                        <a href="{{ url_for('subjects_category', subject='math') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                        </a>
                     </div>
                 </div>
                 
@@ -153,26 +157,30 @@
                 <div class="mt-3">
                     <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
                     {% for resource in featured_resources['math'][:2] %}
-                    <div class="featured-resource">
-                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
-                        <div class="meta">
-                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
-                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                    <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                        <div class="featured-resource">
+                            <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                            <div class="meta">
+                                <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                                <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 {% endif %}
-            </a>
+            </div>
         </div>
         
         <!-- Physics -->
         <div class="col-lg-6 mb-4">
-            <a href="{{ url_for('subjects_category', subject='physics') }}" class="category-card d-block">
+            <div class="category-card">
                 <div class="category-icon bg-success mx-auto">
                     <i class="fas fa-atom"></i>
                 </div>
-                <h3 class="text-center mb-2">Physics</h3>
+                <a href="{{ url_for('subjects_category', subject='physics') }}" class="text-decoration-none">
+                    <h3 class="text-center mb-2 text-dark">Physics</h3>
+                </a>
                 <p class="text-center text-muted mb-3">
                     Physics resources covering mechanics, electromagnetism, quantum physics, and more across all levels
                 </p>
@@ -183,7 +191,9 @@
                         <small class="text-muted">Resources Available</small>
                     </div>
                     <div class="text-end">
-                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                        <a href="{{ url_for('subjects_category', subject='physics') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-right fa-2x text-success"></i>
+                        </a>
                     </div>
                 </div>
                 
@@ -191,26 +201,30 @@
                 <div class="mt-3">
                     <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
                     {% for resource in featured_resources['physics'][:2] %}
-                    <div class="featured-resource">
-                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
-                        <div class="meta">
-                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
-                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                    <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                        <div class="featured-resource">
+                            <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                            <div class="meta">
+                                <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                                <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 {% endif %}
-            </a>
+            </div>
         </div>
         
         <!-- Chemistry -->
         <div class="col-lg-6 mb-4">
-            <a href="{{ url_for('subjects_category', subject='chemistry') }}" class="category-card d-block">
+            <div class="category-card">
                 <div class="category-icon bg-warning mx-auto">
                     <i class="fas fa-flask"></i>
                 </div>
-                <h3 class="text-center mb-2">Chemistry</h3>
+                <a href="{{ url_for('subjects_category', subject='chemistry') }}" class="text-decoration-none">
+                    <h3 class="text-center mb-2 text-dark">Chemistry</h3>
+                </a>
                 <p class="text-center text-muted mb-3">
                     Organic, inorganic, and physical chemistry resources with detailed mechanisms and reactions
                 </p>
@@ -221,7 +235,9 @@
                         <small class="text-muted">Resources Available</small>
                     </div>
                     <div class="text-end">
-                        <i class="fas fa-arrow-right fa-2x text-warning"></i>
+                        <a href="{{ url_for('subjects_category', subject='chemistry') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-right fa-2x text-warning"></i>
+                        </a>
                     </div>
                 </div>
                 
@@ -229,17 +245,19 @@
                 <div class="mt-3">
                     <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
                     {% for resource in featured_resources['chemistry'][:2] %}
-                    <div class="featured-resource">
-                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
-                        <div class="meta">
-                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
-                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                    <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                        <div class="featured-resource">
+                            <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                            <div class="meta">
+                                <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                                <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 {% endif %}
-            </a>
+            </div>
         </div>
         
         <!-- Biology -->
@@ -267,13 +285,15 @@
                 <div class="mt-3">
                     <small class="text-muted fw-bold">FEATURED RESOURCES:</small>
                     {% for resource in featured_resources['biology'][:2] %}
-                    <div class="featured-resource">
-                        <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
-                        <div class="meta">
-                            <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
-                            <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                    <a href="{{ url_for('view_resource', resource_id=resource.id) }}" class="text-decoration-none">
+                        <div class="featured-resource">
+                            <h6>{{ resource.title[:50] }}{% if resource.title|length > 50 %}...{% endif %}</h6>
+                            <div class="meta">
+                                <span>{{ resource.category }} • {{ resource.resource_type|title }}</span>
+                                <span><i class="fas fa-eye"></i> {{ resource.view_count }}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div>
                 {% endif %}
